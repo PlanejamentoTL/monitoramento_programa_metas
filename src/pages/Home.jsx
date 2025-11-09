@@ -243,9 +243,8 @@ const refresh = useCallback(async () => {
                 <div className="pesquisa" >  
                
                 <select  id="planos" className="select_planos" name="lista" value={plano} onChange={(e) => setPlano(e.target.value)}>
+                   <option value="Plano de Governo">Plano de Governo</option>
                   <option value="Plano Plurianual 2022-2025">Plano Plurianual</option>
-                  <option value="Plano de Governo">Plano de Governo</option>
-                 
                   <option value="Lei de Diretrizes Orçamentárias">Lei de Diretrizes Orçamentárias</option>
                   <option value="Plano Diretor">Plano Diretor</option>
                   <option value="Plano Municipal da Primeira Infância">Plano Municipal da Primeira Infância</option>

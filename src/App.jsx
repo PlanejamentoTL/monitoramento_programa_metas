@@ -11,8 +11,11 @@ export default function App() {
     <AuthProviderLocal>
       <BrowserRouter>
         <Routes>
-          <Route
-            path="/"
+         
+         
+
+           <Route
+            path="/monitoramento_programa_metas"
             element={
               <ProtectedRoute>
                 <Home />
@@ -20,7 +23,7 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/login" element={<LoginLocal />} />
+           <Route path="/login" element={<LoginLocal />} />
         </Routes>
       </BrowserRouter>
     </AuthProviderLocal>

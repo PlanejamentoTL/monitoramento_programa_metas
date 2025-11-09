@@ -26,7 +26,7 @@ export default function LoginLocal() {
     setLoading(false);
 
     if (res.ok) {
-      navigate("/");
+      navigate("/monitoramento_programa_metas");
     } else {
       const map = {
         CREDENCIAIS_INVALIDAS: "Usuário ou senha incorretos.",
