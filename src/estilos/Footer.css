@@ -1,0 +1,66 @@
+
+.rodape{
+
+  width: 100%;
+}
+.dados_direitos {
+  
+  color: #000;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+  bottom: 0;
+  background-color: #fff;
+ 
+
+}
+
+
+.dados_uteis{
+
+  display: flex;
+  background-color:  #8A1D1B ;
+  padding: 2%;
+  gap: 1rem;
+
+}
+
+.logo_completo{
+
+  height: 200px;
+  width:  200px;
+}
+
+.redes_sociais{
+
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  
+
+}
+
+.icone_redes{
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 100%;
+  color:#8A1D1B;
+  height: 40px;
+  width: 40px;
+  font-size: large;
+
+}
+
+.dados_contatos{
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+
+}
