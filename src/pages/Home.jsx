@@ -25,7 +25,7 @@ const { user, logout } = useAuthLocal();
 
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
-  const [plano, setPlano] = useState("Plano Plurianual 2022-2025");
+  const [plano, setPlano] = useState("Plano de Governo");
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalplanosOpen, setIsModalplanosOpen] = useState(false);
