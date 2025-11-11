@@ -70,8 +70,10 @@ export default function PainelMetas({ rows = [] }) {
 
       <div className="bento-grid">
         {/* Gráfico */}
-        <div className="bento-card grafico"  style={{ gridArea: "box-1" }} >
+        <div className="bento-card"  style={{ gridArea: "box-1" }} >
+          <div className="grafico-status">
           <Doughnut data={chartData} options={chartOptions} />
+          </div>
         </div>
 
         {/* Contadores */}
