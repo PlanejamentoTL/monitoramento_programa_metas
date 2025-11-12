@@ -32,5 +32,6 @@
   { "email": "reginaldo.carvalho@treslagoas.ms.gov.br", "senha": "182746", "nome": "Reginaldo", "secretaria": "SEGOV", "role": "user", "ativo": true },
   { "email": "fernando.luz@treslagoas.ms.gov.br", "senha": "889043", "nome": "Fernando", "secretaria": "SEGOV", "role": "user", "ativo": true },
   { "email": "gilson.martins@treslagoas.ms.gov.br", "senha": "882312", "nome": "Gilson", "secretaria": "SEGOV", "role": "user", "ativo": true },
-  { "email": "janaina.ferreira@treslagoas.ms.gov.br", "senha": "679447", "nome": "Janaína", "secretaria": "SEMEC", "role": "user", "ativo": true }
+  { "email": "janaina.ferreira@treslagoas.ms.gov.br", "senha": "679447", "nome": "Janaína", "secretaria": "SEMEC", "role": "user", "ativo": true },
+  { "email": "fernandabarbosa.obras@treslagoas.ms.gov.br", "senha": "123388", "nome": "Fernanda", "secretaria": "SEINTRA", "role": "user", "ativo": true }
 ]
