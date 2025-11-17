@@ -245,7 +245,7 @@ const refresh = useCallback(async () => {
                 <select  id="planos" className="select_planos" name="lista" value={plano} onChange={(e) => setPlano(e.target.value)}>
                    <option value="Plano de Governo">Plano de Governo</option>
                   <option value="Plano Plurianual 2022-2025">Plano Plurianual</option>
-                  <option value="Lei de Diretrizes Orçamentárias">Lei de Diretrizes Orçamentárias</option>
+                  <option value="ldo">Lei de Diretrizes Orçamentárias 2025</option>
                   <option value="Plano Diretor">Plano Diretor</option>
                   <option value="Plano Municipal da Primeira Infância">Plano Municipal da Primeira Infância</option>
                   <option value="Plano Três Lagoas Sustentável">Plano Três Lagoas Sustentável</option>
@@ -278,7 +278,26 @@ const refresh = useCallback(async () => {
                   <br/>
                   <br/>
 
-                   <span> Status atual: {row.Status_2025_1} </span>
+                 
+
+                        <div className="status" style={{
+  background: {
+   "Concluída": "rgba(0, 226, 0, 0.7)",
+  "Em Partes": "rgba(0, 96, 163, 0.7 )",
+  "Planejada": "rgba(255, 255, 0, 0.7)",
+  "Não Contemplada": "rgba(232, 36, 36, 0.7 )"
+  }[row.Status_2025_1],        
+  padding: "8px",
+  borderRadius: "5px",
+  color: "#000",
+ 
+
+
+
+ 
+}}>
+  <strong  >Status:</strong> {row.Status_2025_1}
+</div>
                    <br/>
                    <span> Previsão de conclusão: {row.Data_conclusao}</span>
 
@@ -324,6 +343,7 @@ const refresh = useCallback(async () => {
           if (res.ok) {
             // atualiza o campo com a URL retornada
             onChangeField(field, res.url);
+             await refresh();
           } else {
             alert("Falha no upload: " + (res.error || "erro"));
           }
@@ -350,6 +370,7 @@ const refresh = useCallback(async () => {
           if (res.ok) {
             // atualiza o campo com a URL retornada
             onChangeField(field, res.url);
+             await refresh();
           } else {
             alert("Falha no upload: " + (res.error || "erro"));
           }

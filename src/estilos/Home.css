@@ -31,6 +31,14 @@
     background-color: #fff;
 }
 
+.status{
+     
+    height: auto;
+    width: 200px;
+    align-items: end;
+    align-self: flex-end;
+}
+
 .menu-items{
     display: flex;
     flex-direction: column;
