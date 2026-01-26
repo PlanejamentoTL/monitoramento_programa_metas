@@ -5,15 +5,21 @@ const BASE_URLLDO = import.meta.env.VITE_SHEETS_APILDO;  // LDO
 
 // escolhe a base conforme o plano selecionado
 function getBaseForPlano(plano = "") {
-  const p = (plano || "").toLowerCase();
+  const p = (plano).toLowerCase();
 
-  // use termos em minúsculas porque 'p' foi lowercased
-  if (p.includes("ldo")) {
-    return BASE_URL;
+
+  if (p == "ldo") {
+
+    return BASE_URLLDO;
+
   }
+  
   if (p.includes("plano de governo")) {
+
     return BASE_URLPG;
+
   }
+
   return BASE_URL;
 }
 
