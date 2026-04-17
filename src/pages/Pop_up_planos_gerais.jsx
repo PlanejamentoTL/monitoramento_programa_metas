@@ -1,5 +1,5 @@
 // components/EditPGModal.jsx
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import '../estilos/pop-up.css';
 
@@ -12,8 +12,10 @@ export default function EditPlanosGeraisModal({
   onClose,
   onChangeField,
   onSave,
-  onFileSelect
+   uploadParaDrive,
 }) {
+
+  const [uploading, setLoading] = useState(false);
   if (!isOpen) return null;
 
   // helpers
@@ -53,54 +55,6 @@ export default function EditPlanosGeraisModal({
   // mapeamento de chaves do seu dataset -> ids do HTML
   // (ajuste os nomes conforme os cabeçalhos reais da planilha)
 
-  const map = useMemo(
-    () => ({
-      Numero: "campo_numero2",
-      Meta: "campo_descricao2",
-      Objetivo_meta: "campo_objetivo_meta2",
-      Detalhamento_meta: "campo_detalhamento_meta2",
-      ODS: "campo_ods_meta2",
-      Status_2025_1: "campo_status_meta2", // aqui vira <select>
-      Indicador: "campo_indicador_meta2",
-      Unidade_medida: "campo_unidade_medida2",
-      Resultado_indicador_2025_1: "campo_resultado_indicador25_2",
-      Resultado_indicador_2025_2: "campo_resultado_indicador25",
-      Resultado_indicador_2026_1: "campo_resultado_indicador26_1",
-      Resultado_indicador_2026_2: "campo_resultado_indicador26_2",
-      Resultado_indicador_2027_1: "campo_resultado_indicador25_1",
-      Resultado_indicador_2027_2: "campo_resultado_indicador25_2",
-      Resultado_indicador_2028_1: "campo_resultado_indicador26_1_dup",
-      Resultado_indicador_2028_2: "campo_resultado_indicador26_2_dup",
-
-      Documento_comprobatorio: "campo_documento_comprobatorio2", // file (não enviado direto para planilha)
-      Porcentagem_execucao: "campo_porcentagem_meta2",
-      Data_conclusao: "campo_data_conclusao_meta2",
-
-      Tipo_meta: "campo_tipo_meta2",
-      Custeio_investimento: "campo_custeio_investimento2",
-      Programa: "campo_programa2",
-      Funcao: "campo_funcao2",
-      Sub_funcao: "campo_sub_funcao2",
-      Fonte_orcamentaria: "campo_fonte_orcamentaria2",
-      CO_fonte_orcamentaria: "campo_co_fonte_orcamentaria2",
-      Projeto_atividade: "campo_projeto_atividade2",
-      Meta_estruturante: "campo_meta_houer2",
-
-      Meta_fisica_2026: "campo_meta_fisica26_2",
-      Meta_financeira_2026: "campo_meta_financeira26_2",
-      Meta_fisica_2027: "campo_meta_fisica27_2",
-      Meta_financeira_2027: "campo_meta_financeira27_2",
-      Meta_fisica_2028: "campo_meta_fisica28_2",
-      Meta_financeira_2028: "campo_meta_financeira28_2",
-      Meta_fisica_2029: "campo_meta_fisica29_2",
-      Meta_financeira_2029: "campo_meta_financeira29_2",
-
-      Informacoes_adicionais: "campo_informacoes_adicionais2",
-      Ultima_atualizacao: "campo_ultima_atualizacao2",
-      Responsavel_envio: "campo_responsavel_envio2",
-    }),
-    []
-  );
 
   // campos editáveis simples (inputs)
   const editableInputs = [
@@ -142,7 +96,7 @@ export default function EditPlanosGeraisModal({
 
             <div className="descricao">
               <h1 id="campo_numero">
-                {gv("Numero")}
+                {gv("numero")}
               </h1>
               <h1 className="descricao" >
                 -
@@ -150,7 +104,7 @@ export default function EditPlanosGeraisModal({
              
               <h3
                 id="campo_descricao2">
-                {gv("Meta")}
+                {gv("meta")}
               </h3>
             </div>
 
@@ -162,7 +116,7 @@ export default function EditPlanosGeraisModal({
               <br />
               <span
                 id="campo_objetivo_meta2">
-                {gv("Detalhamento")}
+                {gv("detalhamento")}
               </span>
             </div>
 
@@ -175,21 +129,26 @@ export default function EditPlanosGeraisModal({
               </h4>
           
               <span id="campo_ods_meta2" >
-              {gv("ODS")}
+              {gv("ods-vinculados")}
               </span>
             </div>
           </div>
 
-          {/* STATUS */}
-          <div className="campo">
-            <label>Status:</label>
+
+
+
+          <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Status 2025-1:</label>
             <br />
             <br />
             <select
               id="campo_status_meta2"
               className="campo_input"
-              value={gv("Status_2025_1")}
-              onChange={(e) => handleChange("Status_2025_1", e.target.value)}
+              value={gv("status-2025-1")}
+              onChange={(e) => handleChange("status-2025-1", e.target.value)}
+              disabled
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>
@@ -197,9 +156,148 @@ export default function EditPlanosGeraisModal({
               <option value="Planejada">Planejada</option>
               <option value="Não Contemplada">Não Contemplada</option>
             </select>
-
-            
           </div>
+
+          <div className="campo">
+            <label>Status 2025-2:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2025-2")}
+              onChange={(e) => handleChange("status-2025-2", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+            <div className="campo">
+            <label>Status 2026-1*:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2026-1")}
+              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+          <div className="campo">
+            <label>Status 2026-2:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2026-2")}
+              onChange={(e) => handleChange("status-2026-2", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+        </div>
+
+          <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Status 2027-1:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2027-1")}
+              onChange={(e) => handleChange("status-2027-1", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+          <div className="campo">
+            <label>Status 2027-2:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2027-2")}
+              onChange={(e) => handleChange("status-2027-2", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+            <div className="campo">
+            <label>Status 2028-1:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2028-1")}
+              onChange={(e) => handleChange("status-2028-1", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+          <div className="campo">
+            <label>Status 2028-2:</label>
+            <br />
+            <br />
+            <select
+              id="campo_status_meta2"
+              className="campo_input"
+              value={gv("status-2028-2")}
+              onChange={(e) => handleChange("status-2028-2", e.target.value)}
+              disabled
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+
+        </div>
+
+          
+
 
               <div className="activity-data">
             <div className="campo">
@@ -210,9 +308,9 @@ export default function EditPlanosGeraisModal({
                 id="campo_porcentagem_meta2"
                 className="campo_input"
                 type="text"
-                value={gv("Porcentagem_execucao")}
+                value={gv("porcentagem-execucao")}
                 onChange={(e) =>
-                  handleChange("Porcentagem_execucao", e.target.value)
+                  handleChange("porcentagem-execucao", e.target.value)
                 }
               />
             </div>
@@ -225,8 +323,8 @@ export default function EditPlanosGeraisModal({
                 id="campo_data_conclusao_meta2"
                 className="campo_input"
                 type="date"
-                value={normalizeDateInput(gv("Data_conclusao"))}
-                onChange={(e) => handleChange("Data_conclusao", e.target.value)}
+                value={normalizeDateInput(gv("data-conclusao"))}
+                onChange={(e) => handleChange("data-conclusao", e.target.value)}
               />
             </div>
           </div>
@@ -243,8 +341,8 @@ export default function EditPlanosGeraisModal({
                 id="plano_acao"
                 className="campo_input"
               
-                value={gv("plano_acao")}
-                onChange={(e) => handleChange("plano_acao", e.target.value)}
+                value={gv("plano-acao")}
+                onChange={(e) => handleChange("plano-acao", e.target.value)}
               />
             </div>
 
@@ -260,17 +358,40 @@ export default function EditPlanosGeraisModal({
   className="campo_input"
   type="file"
   accept=".pdf"
-  onChange={(e) => {
-    const f = e.target.files?.[0];
-    if (f) {
-      // dispara o upload pelo Home:
-      onFileSelect?.(f, "documentos_comprobatorios"); 
-      // (opcional) guardar o nome do arquivo no estado:
-      onChangeField?.("Documento_comprobatorio", f.name);
+ onChange={async (e) => {
+  const f = e.target.files?.[0];
+  if (f) {
+    setLoading(true); // Ative um spinner
+    const resultado = await uploadParaDrive(f);
+    
+    if (resultado.ok) {
+      // Salva o LINK no Firestore através do onChangeField
+      onChangeField("documentos-comprobatorios", resultado.url);
+      alert("Arquivo salvo no Google Drive!");
+    } else {
+      alert("Erro no upload para o Drive");
     }
-  }}
+    setLoading(false);
+  }
+}}
 />
 
+{/* Feedback Visual do Upload */}
+  {uploading && (
+    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div className="loader" style={{ width: '20px', height: '20px' }}></div> 
+      <span style={{ color: '#666', fontSize: '13px' }}>Enviando documento para o Drive...</span>
+    </div>
+  )}
+
+
+{/* Dentro do Modal, abaixo do input file */}
+{gv("documentos-comprobatorios") && (
+  <div style={{ marginTop: '10px', color: 'blue', fontSize: '12px' }}>
+    <i className="uil uil-link"></i> Link gerado: 
+    <a href={gv("documentos-comprobatorios")} target="_blank" rel="noreferrer"> Visualizar Arquivo</a>
+  </div>
+)}
 
           </div>
 
@@ -284,32 +405,13 @@ export default function EditPlanosGeraisModal({
                 id="justificativa"
                 className="campo_input"
               
-                value={gv("justificativa")}
-                onChange={(e) => handleChange("justificativa", e.target.value)}
+                value={gv("justificativa-nao-conclusao")}
+                onChange={(e) => handleChange("justificativa-nao-conclusao", e.target.value)}
               />
             </div>
 
 
-            <div className="campo">
-            <label>Documento Comprobatório da justificativa:</label>
-            <br />
-            <br />
-            <input
-  id="campo_documento_comprobatorio2"
-  className="campo_input"
-  type="file"
-  accept=".pdf"
-  onChange={(e) => {
-    const f = e.target.files?.[0];
-    if (f) {
-      // dispara o upload pelo Home:
-      onFileSelect?.(f, "documentos_justificativa"); 
-      // (opcional) guardar o nome do arquivo no estado:
-      onChangeField?.("Documento_comprobatorio", f.name);
-    }
-  }}
-/>
-          </div>
+            
 
 
 
@@ -324,10 +426,17 @@ export default function EditPlanosGeraisModal({
                 id="InfosAdd"
                 className="campo_input"
               
-                value={gv("InfosAdd")}
-                onChange={(e) => handleChange("InfosAdd", e.target.value)}
+                value={gv("informacoes-adicionais")}
+                onChange={(e) => handleChange("informacoes-adicionais", e.target.value)}
               />
             </div>
+
+            <span>Última Atualização: {gv("data-ultima-atualizacao")}</span>
+            <br/>
+          
+            <span>Responsável: {gv("responsavel-ultima-atualizacao")}</span>
+             <br/>
+            <br/>
 
        
 
@@ -338,7 +447,7 @@ export default function EditPlanosGeraisModal({
             className={loading ? "loading" : ""}
             disabled={loading}
           >
-            <i className="uil uil-save"> </i> {loading ? "Salvando..." : "Salvar"}
+            <i className="uil uil-save"> </i>  {loading ? "Salvando..." : "Salvar Alterações"}
           </button>
 
           {loading && <div className="loader"></div>}

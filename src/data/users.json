@@ -1,5 +1,5 @@
 [
-  { "email": "willian.costa@treslagoas.ms.gov.br", "senha": "123456", "nome": "Willian", "secretaria": "SEGOV", "role": "admin", "ativo": true },
+  { "email": "willian.costa@treslagoas.ms.gov.br", "senha": "123456", "nome": "Willian", "secretaria": "SMAS", "role": "admin", "ativo": true },
   { "email": "joao.hentz@treslagoas.ms.gov.br", "senha": "654321", "nome": "João Pedro", "secretaria": "SEGOV", "role": "user", "ativo": true },
   { "email": "lesliane.piacente@treslagoas.ms.gov.br", "senha": "384727", "nome": "Lesliane", "secretaria": "SEGOV", "role": "user", "ativo": true },
   { "email": "cristiane.rocha@treslagoas.ms.gov.br", "senha": "901234", "nome": "Cristiane", "secretaria": "SEGOV", "role": "user", "ativo": true },

@@ -23,11 +23,11 @@ import { listItems, updateItem, uploadFile } from "../api";
 // import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
 // Chart.register(ArcElement, Tooltip, Legend);
 
-export default function Home() {
+export default function visualizacaoGeral() {
 
   const { user, logout } = useAuthLocal();
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,42 +36,43 @@ export default function Home() {
   const [isModalPPAOpen, setIsModalPPAOpen] = useState(false);
   const [selected, setSelected] = useState({});
   const [saving, setSaving] = useState(false);
-  const [secretariaSelecionada, setsecretariaSelecionada] = useState(user.secretaria);
-  const [rows, setRows] = useState([]);
   const [plano, setPlano] = useState("plano-governo");
+  const [secretariaFiltro, setSecretariaFiltro] = useState("Todas");
+  const [rows, setRows] = useState([]);
   const [isAdmin, setisAdmin] = useState(false);
 
 
-
 useEffect(() => {
-  const getMetas = async () => {
+  const fetchDadosGerais = async () => {
     try {
-      // 1. Referência básica da coleção baseada no plano
       const collectionRef = collection(db, plano);
       let q;
 
-      // 2. Lógica de Filtro: Se "Todas" estiver selecionada, busca tudo. 
-      // Caso contrário, aplica o filtro 'where'
-      if (secretariaSelecionada === "Todas" || !secretariaSelecionada) {
+      if (secretariaFiltro === "Todas") {
+        // Busca tudo do plano selecionado sem filtro de secretaria
         q = query(collectionRef);
       } else {
+        // Filtra pela secretaria escolhida no select
         q = query(
           collectionRef, 
-          where("secretaria-responsavel", "==", secretariaSelecionada)
+          where("secretaria-responsavel", "==", secretariaFiltro)
         );
       }
 
-      const data = await getDocs(q);
-      setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-
+      const querySnapshot = await getDocs(q);
+      const dados = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+      
+      setRows(dados);
     } catch (error) {
-      console.error("Erro ao buscar metas: ", error);
+      console.error("Erro na busca geral:", error);
     }
   };
 
-  // O useEffect agora "escuta" tanto a mudança de plano quanto de secretaria
-  getMetas();
-}, [plano, secretariaSelecionada]);
+  fetchDadosGerais();
+}, [plano, secretariaFiltro]); // Atualiza sempre que mudar o plano ou a secretaria
 
 useEffect(()=> {
 
@@ -316,7 +317,7 @@ const refresh = useCallback(async () => {
           
       
                 <span className="link-name">
-                <span style={{marginRight: "2px"}}  >  <FaUserAlt /> </span>
+                <span style={{marginRight: "2px"}} >  <FaUserAlt /> </span>
                   Olá, <span id="nome_usuario">{user?.nome || user?.email}</span>
                 </span>
              
@@ -324,18 +325,22 @@ const refresh = useCallback(async () => {
                  <span style={{marginRight: "2px"}} ><FaHouseUser /></span>
                  {user?.secretaria}
                 </span>
+
+               
           
-                <span className="link-name2"  style={{ backgroundColor:"blue", color:"#FFF", width:"100%", padding:"5%", display:"flex", gap:"0.5rem", alignItems:"center", borderRadius:"5px"}} >
+                <span className="link-name2" onClick={() => navigate("/monitoramento_programa_metas")} >
                    <span style={{marginRight: "2px"}} ><FaFileAlt /></span>
-                  Atualização de Planos</span>
+                  Atualização de Planos
+                  </span>
 
               
 
               {isAdmin && (
 
-                 <span className="link-name2" onClick={() => navigate("/visualizacao_geral")}>
-   <FaGlobeAmericas/> Visualização Geral
-</span>
+                 <span className="link-name2"  style={{ backgroundColor:"blue", color:"#FFF", width:"100%", padding:"5%", display:"flex", gap:"0.5rem", alignItems:"center", borderRadius:"5px"}} >
+                    <span style={{marginRight: "2px"}} ><FaGlobeAmericas/></span>
+                 <span>Visualização Geral </span> 
+                </span>
 
               )}
 
@@ -365,39 +370,63 @@ const refresh = useCallback(async () => {
      
 
           <div className="pesquisa_planos">
-          
-          
-                <span className="titulo_campo" htmlFor="planos">
-                  Instrumento de Planejamento:
-                </span>
 
-                <div className="pesquisa" >  
-               
-<select 
-  id="planos" 
-  className="select_planos" 
-  value={plano} 
-  onChange={(e) => setPlano(e.target.value)}
->
-  <option value="plano-governo">Plano de Governo</option>
+         
+          
+          
+
+<div className="pesquisa_planos">
+
+       <div style={{display: "flex", gap:"3rem"}} >
+  <div className="campo_filtro">
+    <span className="titulo_campo">Instrumento:</span>
+    <br/>
+    <select 
+      className="select_planos" 
+      value={plano} 
+      onChange={(e) => setPlano(e.target.value)}
+    >
+        <option value="plano-governo">Plano de Governo</option>
   <option value="plano-plurianual">Plano Plurianual 2022-2025</option>
   <option value="ldo-2026">Lei de Diretrizes Orçamentárias 2026</option>
   <option value="plano-diretor">Plano Diretor</option>
   <option value="plano-primeira-infancia">Plano Municipal da 1ª Infância</option>
   <option value="plano-tres-lagoas-sustentavel">Plano Três Lagoas Sustentável</option>
   <option value="plano-setorial">Plano Setorial - Assistência Social</option>
-  {isAdmin &&   <option value="base-teste">Teste</option>}
+  <option value="base-teste">Teste</option>
+    </select>
+  </div>
 
+  <div className="campo_filtro">
+    <span className="titulo_campo">Secretaria Responsável:</span>
+    <br/>
+    <select 
+      className="select_planos" 
+      value={secretariaFiltro} 
+      onChange={(e) => setSecretariaFiltro(e.target.value)}
+    >
 
-
-  {/* Adicione os outros mapeando para as coleções corretas */}
-</select>
-
-                 <hr className="horizontal-line" />
-
-                </div>
+  <option value="Todas">Todas</option>
+  <option value="SEGOV">Secretaria de Governo</option>
+  <option value="SMS">Secretaria de Saúde</option>
+  <option value="Gabinete">Gabinete</option>
+  <option value="SGI">Secretaria de Gestão de Pessoas</option>
+      <option value="SEMEA">Secretaria de Meio Ambiente e Agronegócio</option>
+      <option value="SEMEA-AGRO">Diretoria de Agronegócio Agronegócio</option>
+      <option value="SEGOV-habitacao">Diretoria de Habitação</option>
+      <option value="SEFIRC">Secretaria de Finanças, Receita e Controle</option>
+      <option value="SEJUVEL">Secretaria de Esporte, Juventude e Lazer</option>
+      <option value="SEDECT">Secretaria de Desenvolvimento Econômico, Ciência e Tecnologia</option>
+      <option value="SEMEC">Secretaria de Educação</option>
+      <option value="SEMEC-cultura">Secretaria de Cultura</option>
+      <option value="SEINTRA">Secretaria de Infraestrutura, Transporte e Trânsito</option>
+      <option value="SEINTRA-TT"> Diretoria de Transporte e Trânsito</option>
+      <option value="SMAS">Secretaria de Assistência Social</option>
+    </select>
+  </div>
+</div>
             
-         
+        </div> 
         
         </div>
 
@@ -431,6 +460,8 @@ const refresh = useCallback(async () => {
     </div>
     <br/>
     <span> Previsão de conclusão: {row["data-conclusao"]}</span>
+    <br/>
+    <span> Secretaria: {row["secretaria-responsavel"]}</span>
   </div>
 ))}
 

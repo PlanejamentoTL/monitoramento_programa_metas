@@ -2,7 +2,7 @@ import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import "../estilos/pop-up.css";
 
-export default function EditPGModal({
+export default function EditPPALDOModal({
   isOpen,
   meta = {},
   loading = false,
@@ -28,7 +28,7 @@ export default function EditPGModal({
       <div className="popup" onClick={(e) => e.stopPropagation()}>
         {/* Cabeçalho */}
         <div className="popup-header">
-          <h2>Editar Dados - Plano de Governo</h2>
+          <h2>Editar Dados - LDO</h2>
           <button className="button_close" type="button" onClick={onClose}>
             <MdClose />
           </button>
@@ -46,68 +46,40 @@ export default function EditPGModal({
               <h3>{gv("objetivo")}</h3>
             </div>
 
+
             <div className="campo">
-              <h4><i className="uil-bullseye"></i> Objetivo:</h4>
+              <h4><i className="uil-bullseye"></i> Detalhamento:</h4>
+              
+              <span>{gv("detalhamento")}</span>
+            </div>
+
+            <div className="campo">
+              <h4><i className="uil-bullseye"></i> Objetivo do Plano de Governo Vinculado:</h4>
               
               <span>{gv("objetivo")}</span>
             </div>
 
+            <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}> 
+
             <div className="campo">
-              <h4><i className="uil-link"></i> ODS Vinculados:</h4>
-              <span>{gv("ods-vinculados")}</span>
+              <h4><i className="uil-link"></i> Indicador:</h4>
+              <p>{gv("indicador")}</p>
+            </div>
+        
+
+            <div className="campo">
+              <h4><i className="uil-link"></i> Unidade de medida:</h4>
+              <span>{gv("un-medida")}</span>
             </div>
           </div>
+         </div>
 
-          {/* STATUS - Semestre 2025.1 */}
-
-
-
- <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Status 2025-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2025-1")}
-              onChange={(e) => handleChange("status-2025-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
+          <div className="activity-data" style={{ alignContent:"center"}} > 
           <div className="campo">
-            <label>Status 2025-2:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2025-2")}
-              onChange={(e) => handleChange("status-2025-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-            <div className="campo">
             <label>Status 2026-1*:</label>
             <br />
             <br />
             <select
-              id="campo_status_meta2"
               className="campo_input"
               value={gv("status-2026-1")}
               onChange={(e) => handleChange("status-2026-1", e.target.value)}
@@ -120,12 +92,12 @@ export default function EditPGModal({
             </select>
           </div>
 
-          <div className="campo">
-            <label>Status 2026-1:</label>
+
+             <div className="campo" >
+            <label>Status 2026-2:</label>
             <br />
             <br />
             <select
-              id="campo_status_meta2"
               className="campo_input"
               value={gv("status-2026-2")}
               onChange={(e) => handleChange("status-2026-2", e.target.value)}
@@ -138,120 +110,43 @@ export default function EditPGModal({
               <option value="Não Contemplada">Não Contemplada</option>
             </select>
           </div>
-        </div>
 
-          <div className="activity-data" style={{ alignContent:"center"}} >
 
-            <div className="campo">
-            <label>Status 2027-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2027-1")}
-              onChange={(e) => handleChange("status-2027-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
+
           </div>
 
-          <div className="campo">
-            <label>Status 2027-2:</label>
+
+           <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Resultado Indicador 2026-1*:</label>
             <br />
             <br />
-            <select
-              id="campo_status_meta2"
+            <input
               className="campo_input"
-              value={gv("status-2027-2")}
-              onChange={(e) => handleChange("status-2027-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
+              value={gv("resultado-indicador-2026-1")}
+              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+          
+            />
           </div>
 
             <div className="campo">
-            <label>Status 2028-1:</label>
+            <label>Resultado Indicador 2026-2:</label>
             <br />
             <br />
-            <select
-              id="campo_status_meta2"
+            <input
               className="campo_input"
-              value={gv("status-2028-1")}
-              onChange={(e) => handleChange("status-2028-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Status 2026-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2026-2")}
-              onChange={(e) => handleChange("status-2028-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
+              value={gv("resultado-indicador-2026-1")}
+              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+              readOnly
+          
+            />
           </div>
 
 
-        </div>
+           </div>
 
-          <br />
-
-          {/* Porcentagem e Data */}
-          <div className="activity-data">
-            <div className="campo">
-              <label>Porcentagem de Execução:</label>
-              <br />
-              <br />
-              <input
-                className="campo_input"
-                type="number"
-                value={gv("porcentagem-execucao")}
-                onChange={(e) => handleChange("porcentagem-execucao", e.target.value)}
-              />
-            </div>
-
-            <div className="campo">
-              <label>Previsão de Conclusão:</label>
-              <br />
-              <br />
-              <input
-                className="campo_input"
-                type="date"
-                value={normalizeDateInput(gv("data-conclusao"))}
-                onChange={(e) => handleChange("data-conclusao", e.target.value)}
-              />
-            </div>
-          </div>
-
-
-                    {/* Documento comprobatório (file) — você pode guardar o nome do arquivo */}
+      
           <div className="campo">
             <label>Documento Comprobatório:</label>
             <br />
@@ -298,7 +193,7 @@ export default function EditPGModal({
 
           </div>
 
-          {/* Justificativa */}
+       
           <div className="activity-data">
             <div className="campo" style={{ width: '100%' }}>
               <label>Justificativa de não conclusão:</label>
@@ -312,20 +207,113 @@ export default function EditPGModal({
             </div>
           </div>
 
-          {/* Informações adicionais - Agora editável */}
+         
           <div className="campo">
             <label><b>Informações adicionais:</b></label>
             <br />
             <br />
             <textarea
               className="campo_input"
-              style={{ width: '100%', minHeight: '60px' }}
+               style={{ width: '100%', minHeight: '60px' }}
               value={gv("informacoes-adicionais")}
               onChange={(e) => handleChange("informacoes-adicionais", e.target.value)}
             />
           </div>
 
-          {/* Última atualização e responsável - Apenas visualização */}
+
+          <div className="destaque">
+
+              <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
+            <div className="campo">
+              <label><b>Tipo Meta:</b></label>
+              <span> {gv("tipo-meta")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Custeio/Investimento:</b></label>
+              <span> {gv("custeio-investimento")}</span>
+            </div>
+          </div>
+
+
+           <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
+            
+            <div className="campo">
+              <label><b>Programa:</b></label> <br/>
+              <span> {gv("programa")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Projeto Atividade:</b></label> <br/>
+              <span> {gv("projeto-atividade")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Função:</b></label> <br/>
+              <span> {gv("funcao")}</span>
+            </div>
+            <div className="campo">
+              <label><b>Subfunção:</b></label> <br/>
+              <span> {gv("subfuncao")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Meta previamente planejada:</b></label> <br/>
+              <span> {gv("meta-previamente-planejada")}</span>
+            </div>
+
+           </div>
+
+           <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
+            
+            <div className="campo">
+              <label><b>Meta física 2026:</b></label> <br/>
+              <span> {gv("meta-fisica-2026")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Meta física 2027:</b></label> <br/>
+              <span> {gv("meta-fisica-2027")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Meta física 2028:</b></label> <br/>
+              <span> {gv("meta-fisica-2028")}</span>
+            </div>
+            <div className="campo">
+              <label><b>Meta física 2029:</b></label> <br/>
+              <span> {gv("meta-fisica-2029")}</span>
+            </div>
+           </div>
+
+           <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
+            
+            <div className="campo">
+              <label><b>Meta financeira 2026:</b></label> <br/>
+              <span> {gv("meta-financeira-2026")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Meta financeira 2027:</b></label> <br/>
+              <span> {gv("meta-financeira-2027")}</span>
+            </div>
+
+            <div className="campo">
+              <label><b>Meta financeira 2028:</b></label> <br/>
+              <span> {gv("meta-financeira-2028")}</span>
+            </div>
+            <div className="campo">
+              <label><b>Meta financeira 2029:</b></label> <br/>
+              <span> {gv("meta-financeira-2029")}</span>
+            </div>
+
+            
+
+           </div>
+
+          </div>
+
+         
           <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
             <div className="campo">
               <label><b>Última atualização:</b></label>
@@ -333,9 +321,7 @@ export default function EditPGModal({
             </div>
 
             <div className="campo">
-              <label><b> 
-                
-                Responsável envio:</b></label>
+              <label><b>Responsável envio:</b></label>
               <span> {gv("responsavel-ultimo-envio")}</span>
             </div>
           </div>

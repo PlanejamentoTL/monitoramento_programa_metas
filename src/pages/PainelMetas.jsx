@@ -13,7 +13,7 @@ ChartJS.register(ArcElement, Tooltip, Legend, ChartDataLabels);
 
 export default function PainelMetas({ rows = [] }) {
   // Contagem por status
-  const statusCount = useMemo(() => {
+const statusCount = useMemo(() => {
     const map = {
       "Concluída": 0,
       "Em Partes": 0,
@@ -21,7 +21,7 @@ export default function PainelMetas({ rows = [] }) {
       "Não Contemplada": 0,
     };
     rows.forEach((r) => {
-      const s = (r.Status_2025_1 || "").trim();
+      const s = (r["status-2026-1"] || "").trim();
       if (map.hasOwnProperty(s)) map[s]++;
     });
     return map;
