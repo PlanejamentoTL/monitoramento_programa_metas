@@ -74,6 +74,11 @@ export default function EditPPALDOModal({
           </div>
          </div>
 
+                  <div>
+            <h2>Histórico de Status</h2>
+            <p>Adicione um documento comprobatório caso o status seja "Concluída" ou um documento de justificativa caso o status seja "Não Contemplada".</p>
+          </div>
+
           <div className="activity-data" style={{ alignContent:"center"}} > 
           <div className="campo">
             <label>Status 2026-1*:</label>
@@ -125,7 +130,7 @@ export default function EditPPALDOModal({
             <input
               className="campo_input"
               value={gv("resultado-indicador-2026-1")}
-              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+              onChange={(e) => handleChange("resultado-indicador-2026-1", e.target.value)}
           
             />
           </div>
@@ -136,8 +141,8 @@ export default function EditPPALDOModal({
             <br />
             <input
               className="campo_input"
-              value={gv("resultado-indicador-2026-1")}
-              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+              value={gv("resultado-indicador-2026-2")}
+              onChange={(e) => handleChange("resultado-indicador-2026-2", e.target.value)}
               readOnly
           
             />
@@ -148,7 +153,7 @@ export default function EditPPALDOModal({
 
       
           <div className="campo">
-            <label>Documento Comprobatório:</label>
+            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
             <br />
             <br />
             <input

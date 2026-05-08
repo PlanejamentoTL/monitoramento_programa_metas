@@ -74,6 +74,11 @@ export default function EditPPAModal({
           </div>
          </div>
 
+                  <div>
+            <h2>Histórico de Status</h2>
+            <p>Adicione um documento comprobatório caso o status seja "Concluída" ou um documento de justificativa caso o status seja "Não Contemplada".</p>
+          </div>
+
           <div className="activity-data" style={{ alignContent:"center"}} > 
           <div className="campo">
             <label>Status 2026-1*:</label>
@@ -236,7 +241,7 @@ export default function EditPPAModal({
             <input
               className="campo_input"
               value={gv("resultado-indicador-2026-1")}
-              onChange={(e) => handleChange("status-2026-1", e.target.value)}
+              onChange={(e) => handleChange("resultado-indicador-2026-1", e.target.value)}
               
               />
           </div>
@@ -248,7 +253,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2026-2")}
-                    onChange={(e) => handleChange("status-2026-2", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2026-2", e.target.value)}
                     readOnly
                 />
             </div>
@@ -260,7 +265,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2027-1")}
-                    onChange={(e) => handleChange("status-2027-1", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2027-1", e.target.value)}
                     readOnly
                 />
             </div>
@@ -272,7 +277,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2027-2")}
-                    onChange={(e) => handleChange("status-2027-2", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2027-2", e.target.value)}
                     readOnly
                 />
             </div>
@@ -287,7 +292,7 @@ export default function EditPPAModal({
             <input
               className="campo_input"
               value={gv("resultado-indicador-2028-1")}
-              onChange={(e) => handleChange("status-2028-1", e.target.value)}
+              onChange={(e) => handleChange("resultado-indicador-2028-1", e.target.value)}
               readOnly
               />
           </div>
@@ -299,7 +304,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2028-2")}
-                    onChange={(e) => handleChange("status-2028-2", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2028-2", e.target.value)}
                     readOnly
                     
                 />
@@ -312,7 +317,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2029-1")}
-                    onChange={(e) => handleChange("status-2029-1", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2029-1", e.target.value)}
                     readOnly
                    
                 />
@@ -325,7 +330,7 @@ export default function EditPPAModal({
                 <input
                     className="campo_input"
                     value={gv("resultado-indicador-2029-2")}
-                    onChange={(e) => handleChange("status-2029-2", e.target.value)}
+                    onChange={(e) => handleChange("resultado-indicador-2029-2", e.target.value)}
                     readOnly
                     
                 />
@@ -334,7 +339,7 @@ export default function EditPPAModal({
 
       
           <div className="campo">
-            <label>Documento Comprobatório:</label>
+            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
             <br />
             <br />
             <input
@@ -411,14 +416,20 @@ export default function EditPPAModal({
 
               <div className="activity-data" style={{ fontSize: '13px', marginTop: '10px' }}>
             <div className="campo">
-              <label><b>Tipo Meta:</b></label>
+              <label><b>Tipo Meta:</b></label> 
               <span> {gv("tipo-meta")}</span>
             </div>
 
             <div className="campo">
-              <label><b>Custeio/Investimento:</b></label>
+              <label><b>Custeio/Investimento:</b></label> 
               <span> {gv("custeio-investimento")}</span>
             </div>
+
+              <div className="campo">
+              <label><b>Fundo:</b></label> 
+              <span> {gv("fundo")}</span>
+            </div>
+
           </div>
 
 

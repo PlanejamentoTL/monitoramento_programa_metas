@@ -136,6 +136,11 @@ export default function EditPlanosGeraisModal({
 
 
 
+          <div>
+            <h2>Histórico de Status</h2>
+            <p>Adicione um documento comprobatório caso o status seja "Concluída" ou um documento de justificativa caso o status seja "Não Contemplada".</p>
+          </div>
+
 
           <div className="activity-data" style={{ alignContent:"center"}} >
 
@@ -350,7 +355,7 @@ export default function EditPlanosGeraisModal({
 
           {/* Documento comprobatório (file) — você pode guardar o nome do arquivo */}
           <div className="campo">
-            <label>Documento Comprobatório:</label>
+            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
             <br />
             <br />
             <input

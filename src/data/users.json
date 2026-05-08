@@ -11,7 +11,7 @@
   { "email": "thais.hirade@treslagoas.ms.gov.br", "senha": "810237", "nome": "Thais", "secretaria": "SEMEA", "role": "user", "ativo": true },
   { "email": "amanda.pivotto@treslagoas.ms.gov.br", "senha": "465789", "nome": "Amanda", "secretaria": "SEMEA-AGRO", "role": "user", "ativo": true },
 
-  { "email": "habitacao@treslagoas.ms.gov.br", "senha": "126345", "nome": "Rafaella", "secretaria": "SEGOV-Habitação", "role": "user", "ativo": true },
+  { "email": "habitacao@treslagoas.ms.gov.br", "senha": "126345", "nome": "Rafaella", "secretaria": "SEGOV-HAB", "role": "user", "ativo": true },
   { "email": "wilson.garcia@treslagoas.ms.gov.br", "senha": "987654", "nome": "Wilson", "secretaria": "SEFIRC", "role": "user", "ativo": true },
   { "email": "reinaldo.anjos@treslagoas.ms.gov.br", "senha": "456987", "nome": "Reinaldo", "secretaria": "SEFIRC", "role": "user", "ativo": true },
   { "email": "josi.serrado@treslagoas.ms.gov.br", "senha": "246801", "nome": "Josiélli", "secretaria": "SEJUVEL", "role": "user", "ativo": true },

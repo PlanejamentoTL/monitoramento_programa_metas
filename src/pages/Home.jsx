@@ -380,7 +380,7 @@ const refresh = useCallback(async () => {
   onChange={(e) => setPlano(e.target.value)}
 >
   <option value="plano-governo">Plano de Governo</option>
-  <option value="plano-plurianual">Plano Plurianual 2022-2025</option>
+  <option value="plano-plurianual">Plano Plurianual 2026-2029</option>
   <option value="ldo-2026">Lei de Diretrizes Orçamentárias 2026</option>
   <option value="plano-diretor">Plano Diretor</option>
   <option value="plano-primeira-infancia">Plano Municipal da 1ª Infância</option>
