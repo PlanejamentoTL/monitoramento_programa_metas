@@ -413,7 +413,9 @@ const refresh = useCallback(async () => {
   <div className="meta" key={row.id} onClick={() => openModal(row)}>
     {/* Use nomes minúsculos se foi assim que salvamos no Firestore */}
     <span> {row.numero} - </span>
-    <span> {row.meta} {row.objetivo} </span>
+      {plano === "plano-governo" && <span>{row.objetivo}</span>}
+      {plano !== "plano-governo" && <span>{row.meta}</span>}
+    
     <br/><br/>
 
     <div className="status" style={{

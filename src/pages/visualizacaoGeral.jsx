@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState,  useCallback  } from "react";
 import { useAuthLocal } from "../context/AuthContextLocal";
 import { useNavigate } from "react-router-dom";
-
+import * as XLSX from "xlsx";
 import EditPGModal from './pop-up_meta';
 import EditPlanos_geraisModal from './Pop_up_planos_gerais';
 import EditPPALDOModal from './pop-up-ldo-ppa';
@@ -18,10 +18,6 @@ import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas } from "react-icons/
 
 import { listItems, updateItem, uploadFile } from "../api";
 
-// Se quiser usar Chart.js pelo npm, instale: npm i chart.js
-// e descomente as linhas abaixo:
-// import { Chart, ArcElement, Tooltip, Legend } from "chart.js";
-// Chart.register(ArcElement, Tooltip, Legend);
 
 export default function visualizacaoGeral() {
 
@@ -162,33 +158,6 @@ async function onSave() {
   }
 }
    
-/*
-
-const refresh = useCallback(async () => {
-    try {
-      const secretaria = (user?.secretaria || "").trim();
-      const res = await listItems(plano, secretaria); // ← filtros no servidor
-      if (res.ok) {
-        console.log("Dados filtrados:", res.data.length);
-        setRows(res.data);
-      } else {
-        console.error("Erro ao buscar dados:", res.error);
-      }
-    } catch (err) {
-      console.error("Exceção ao buscar dados:", err);
-    }
-  }, [plano, user?.secretaria]);
-
-
-  // Carrega na montagem e sempre que plano/secretaria mudarem
-  useEffect(() => {
-    refresh();
-  }, [refresh]);
-
-*/
-
-
-
 
 
   // Estados simples para os contadores
@@ -201,30 +170,6 @@ const refresh = useCallback(async () => {
 
   // Refs para elementos que no HTML eram por id
   const graficoStatusRef = useRef(null);
-
-  // Exemplo de inicialização do Chart.js
-  useEffect(() => {
-    // Se NÃO for usar Chart.js agora, você pode remover todo esse useEffect.
-    // if (!graficoStatusRef.current) return;
-    // const ctx = graficoStatusRef.current.getContext("2d");
-    // const chart = new Chart(ctx, {
-    //   type: "doughnut",
-    //   data: {
-    //     labels: ["Concluídas", "Em Partes", "Planejadas", "Não contempladas"],
-    //     datasets: [
-    //       {
-    //         data: [concluidas, emPartes, planejadas, naoContempladas],
-    //       },
-    //     ],
-    //   },
-    //   options: {
-    //     responsive: true,
-    //     maintainAspectRatio: false,
-    //     plugins: { legend: { display: true } },
-    //   },
-    // });
-    // return () => chart.destroy();
-  }, [concluidas, emPartes, planejadas, naoContempladas]);
 
   function handlePesquisar() {
     // Aqui você implementa a lógica para buscar/atualizar os indicadores
@@ -296,6 +241,196 @@ const refresh = useCallback(async () => {
     };
   });
 };
+
+function gerarPlanilha() {
+  if (rows.length === 0) {
+    alert("Nenhum dado para exportar.");
+    return;
+  }
+
+  // Mapeia os campos que quer exibir na planilha
+
+  const dados = mapeiaDadosPlano();
+
+  const worksheet = XLSX.utils.json_to_sheet(dados);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Metas");
+
+  // Nome do arquivo reflete os filtros ativos
+  const nomeArquivo = `metas_${plano}_${secretariaFiltro}_${new Date().toLocaleDateString("pt-BR").replace(/\//g, "-")}.xlsx`;
+
+  XLSX.writeFile(workbook, nomeArquivo);
+}
+
+function mapeiaDadosPlano(){
+
+
+
+  if(plano === "plano-governo"){
+
+     const dados = rows.map((row) => ({
+      "numero": row.numero,
+      "objetivo": row.objetivo,
+      "ods-vinculados": row["ods-vinculados"],
+      "status-2025-1": row["status-2025-1"],
+      "status-2025-2": row["status-2025-2"],
+      "status-2026-1": row["status-2026-1"],
+      "status-2026-2": row["status-2026-2"],
+      "status-2027-1": row["status-2027-1"],
+      "status-2027-2": row["status-2027-2"],
+      "status-2028-1": row["status-2028-1"],
+      "status-2028-2": row["status-2028-2"],
+      "documentos-comprobatorios": row["documentos-comprobatorios"],
+      "porcentagem-execucao": row["porcentagem-execucao"],
+      "data-conclusao" : row["data-conclusao"],
+      "justificativa-nao-conclusao" : row["justificativa-nao-conclusao"],
+      "informacoes-adicionais": row["informacoes-adicionais"],
+      "data-ultima-atualizacao": row["responsavel-ultimo-envio"],
+      "secretaria-responsavel": row["secretaria-responsavel"],
+      "plano" : row.plano
+  }));
+
+  return dados;
+
+  } else if(plano === "plano-plurianual"){
+
+    const dados = rows.map((row) => ({
+      "numero": row.numero,
+      "meta": row.meta,
+      "indicador": row.indicador,
+      "un-medida": row["un-medida"],
+
+      "status-2026-1": row["status-2026-1"],
+      "status-2026-2": row["status-2026-2"],
+      "status-2027-1": row["status-2027-1"],
+      "status-2027-2": row["status-2027-2"],
+      "status-2028-1": row["status-2028-1"],
+      "status-2028-2": row["status-2028-2"],
+      "status-2029-1": row["status-2029-1"],
+      "status-2029-2": row["status-2029-2"],
+
+      "resultado-indicador-2026-1": row["resultado-indicador-2026-1"],
+      "resultado-indicador-2026-2": row["resultado-indicador-2026-2"],
+      "resultado-indicador-2027-1": row["resultado-indicador-2027-1"],
+      "resultado-indicador-2027-2": row["resultado-indicador-2027-2"],
+      "resultado-indicador-2028-1": row["resultado-indicador-2028-1"],
+      "resultado-indicador-2028-2": row["resultado-indicador-2028-2"],
+      "resultado-indicador-2029-1": row["resultado-indicador-2029-1"],
+      "resultado-indicador-2029-2": row["resultado-indicador-2029-2"],
+
+       "detalhamento": row["detalhamento"],
+       "tipo-meta": row["tipo-meta"],
+       "custeio-investimento": row["custeio-investimento"],
+       "programa": row["programa"],
+       "projeto-atividade": row["projeto-atividade"],
+
+       "funcao": row["funcao"],
+       "subfuncao": row["subfuncao"],
+       "objetivo": row["objetivo"],
+       "ods-vinculado": row["ods-vinculado"],
+      
+      "documentos-comprobatorios": row["documentos-comprobatorios"],
+      "porcentagem-execucao": row["porcentagem-execucao"],
+      "data-conclusao" : row["data-conclusao"],
+      "justificativa-nao-conclusao" : row["justificativa-nao-conclusao"],
+      "informacoes-adicionais": row["informacoes-adicionais"],
+      "data-ultima-atualizacao": row["responsavel-ultimo-envio"],
+      "secretaria-responsavel": row["secretaria-responsavel"],
+      "plano" : row.plano
+  }));
+    
+  
+ return dados;
+
+  }  else if(plano === "ldo-2026"){
+
+    const dados = rows.map((row) => ({
+      "numero": row.numero,
+      "objetivo": row["objetivo"],
+      "meta": row.meta,
+      "ods-vinculado": row["ods-vinculado"],
+      "indicador": row.indicador,
+      "un-medida": row["un-medida"],
+      "status-2026-1": row["status-2026-1"],
+      "status-2026-2": row["status-2026-2"],
+      "resultado-indicador-2026-1": row["resultado-indicador-2026-1"],
+      "resultado-indicador-2026-2": row["resultado-indicador-2026-2"],
+      "documentos-comprobatorios": row["documentos-comprobatorios"],
+      "porcentagem-execucao": row["porcentagem-execucao"],
+      "data-conclusao" : row["data-conclusao"],
+      "detalhamento": row["detalhamento"],
+      "tipo-meta": row["tipo-meta"],
+      "custeio-investimento": row["custeio-investimento"],
+      "programa": row["programa"],
+      "funcao": row["funcao"],
+      "fonte-orcamentaria" : row["fonte-orcamentaria"],
+      "projeto-atividade": row["projeto-atividade"],
+      "subfuncao": row["subfuncao"],
+      "co-fonte-orcamentaria" : row["co-fonte-orcamentaria"],
+      "meta-previamente-planejada" : row["meta-previamente-planejada"],
+      "meta-fisica-2026" : row["meta-fisica-2026"],
+      "meta-financeira-2026" : row["meta-financeira-2026"],
+      "meta-fisica-2027" : row["meta-fisica-2027"],
+      "meta-financeira-2027" : row["meta-financeira-2027"],
+      "meta-fisica-2028" : row["meta-fisica-2028"],
+      "meta-financeira-2028" : row["meta-financeira-2028"],
+      "meta-fisica-2028" : row["meta-fisica-2029"],
+      "meta-financeira-2028" : row["meta-financeira-2029"],
+      "informacoes-adicionais": row["informacoes-adicionais"],
+      "data-ultima-atualizacao": row["responsavel-ultimo-envio"],
+      "responsavel-ultimo-envio" : row["responsavel-ultimo-envio"],
+      "secretaria-responsavel": row["secretaria-responsavel"],
+      "plano" : row.plano
+      
+  }));
+    
+  
+ return dados;
+
+  } else {
+
+    const dados = rows.map((row) => ({
+
+      "numero": row.numero,
+      "meta": row.meta,
+      "ods-vinculado": row["ods-vinculado"],
+      "status-2025-1": row["status-2025-1"],
+      "status-2025-2": row["status-2025-2"],
+      "status-2026-1": row["status-2026-1"],
+      "status-2026-2": row["status-2026-2"],
+      "status-2027-1": row["status-2027-1"],
+      "status-2027-2": row["status-2027-2"],
+      "status-2028-1": row["status-2028-1"],
+      "status-2028-2": row["status-2028-2"],
+      "porcentagem-execucao": row["porcentagem-execucao"],
+      "data-conclusao": row["data-conclusao"],
+      "plano-acao": row["plano-acao"],
+      "detalhamento": row["detalhamento"],
+      "documentos-comprobatorios": row["documentos-comprobatorios"],
+      "justificativa-nao-conclusao": row["justificativa-nao-conclusao"],
+      "documentos-justificativa": row["documentos-justificativa"],
+      "informacoes-adicionais": row["informacoes-adicionais"],
+      "data-ultima-atualizacao": row["responsavel-ultimo-envio"],
+      "responsavel-ultimo-envio" : row["responsavel-ultimo-envio"],
+      "secretaria-responsavel": row["secretaria-responsavel"],
+      "plano" : row.plano
+
+
+
+
+       }));
+       return dados; 
+
+
+
+
+
+
+  }
+
+  return dados; 
+}
+
 
   return (
     <section className="dashboard">
@@ -377,7 +512,7 @@ const refresh = useCallback(async () => {
 
 <div className="pesquisa_planos">
 
-       <div style={{display: "flex", gap:"3rem"}} >
+       <div style={{display: "flex", gap:"3rem", alignItems:"center"}} >
   <div className="campo_filtro">
     <span className="titulo_campo">Instrumento:</span>
     <br/>
@@ -423,6 +558,23 @@ const refresh = useCallback(async () => {
       <option value="SEINTRA-TT"> Diretoria de Transporte e Trânsito</option>
       <option value="SMAS">Secretaria de Assistência Social</option>
     </select>
+  </div>
+
+  <div className="campo_filtro" style={{ display: "flex",alignItems: "center"}}>
+    <button
+      onClick={gerarPlanilha}
+      style={{
+        padding: "8px 16px",
+        backgroundColor: "#1e7e34",
+        color: "#fff",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        fontWeight: "bold",
+      }}
+    >
+       Gerar Planilha
+    </button>
   </div>
 </div>
             
