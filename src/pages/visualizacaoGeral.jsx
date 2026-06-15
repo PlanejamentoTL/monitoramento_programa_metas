@@ -56,12 +56,20 @@ useEffect(() => {
       }
 
       const querySnapshot = await getDocs(q);
-      const dados = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      }));
-      
-      setRows(dados);
+     const dados = querySnapshot.docs.map(docSnap => {
+  const data = docSnap.data();
+
+  // Converte Timestamps para string legível
+  Object.keys(data).forEach(key => {
+    if (data[key]?.seconds !== undefined && data[key]?.nanoseconds !== undefined) {
+      data[key] = new Date(data[key].seconds * 1000).toLocaleString("pt-BR");
+    }
+  });
+
+  return { ...data, id: docSnap.id };
+});
+
+setRows(dados);
     } catch (error) {
       console.error("Erro na busca geral:", error);
     }

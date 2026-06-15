@@ -62,7 +62,18 @@ useEffect(() => {
       }
 
       const data = await getDocs(q);
-      setRows(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setRows(data.docs.map((doc) => {
+  const data = doc.data();
+
+  // Converte qualquer campo Timestamp para string legível
+  Object.keys(data).forEach(key => {
+    if (data[key]?.seconds !== undefined && data[key]?.nanoseconds !== undefined) {
+      data[key] = new Date(data[key].seconds * 1000).toLocaleString("pt-BR");
+    }
+  });
+
+  return { ...data, id: doc.id };
+}));
 
     } catch (error) {
       console.error("Erro ao buscar metas: ", error);

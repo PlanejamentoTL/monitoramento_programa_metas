@@ -43,7 +43,7 @@ export default function EditPPALDOModal({
             <div className="activity-data">
               <h1>{gv("numero")}</h1>
               <h1 className="descricao">-</h1>
-              <h3>{gv("objetivo")}</h3>
+              <h3>{gv("meta")}</h3>
             </div>
 
 
