@@ -561,7 +561,7 @@ function mapeiaDadosPlano(){
       <option value="SEJUVEL">Secretaria de Esporte, Juventude e Lazer</option>
       <option value="SEDECT">Secretaria de Desenvolvimento Econômico, Ciência e Tecnologia</option>
       <option value="SEMEC">Secretaria de Educação</option>
-      <option value="SEMEC-cultura">Secretaria de Cultura</option>
+      <option value="SEMEC-Cultura">Secretaria de Cultura</option>
       <option value="SEINTRA">Secretaria de Infraestrutura, Transporte e Trânsito</option>
       <option value="SEINTRA-TT"> Diretoria de Transporte e Trânsito</option>
       <option value="SMAS">Secretaria de Assistência Social</option>
