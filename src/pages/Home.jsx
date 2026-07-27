@@ -62,18 +62,23 @@ useEffect(() => {
       }
 
       const data = await getDocs(q);
-      setRows(data.docs.map((doc) => {
-  const data = doc.data();
 
-  // Converte qualquer campo Timestamp para string legível
-  Object.keys(data).forEach(key => {
-    if (data[key]?.seconds !== undefined && data[key]?.nanoseconds !== undefined) {
-      data[key] = new Date(data[key].seconds * 1000).toLocaleString("pt-BR");
-    }
-  });
+    
 
-  return { ...data, id: doc.id };
-}));
+      
+setRows(
+  data.docs
+    .map((doc) => {
+      const docData = doc.data();
+      Object.keys(docData).forEach(key => {
+        if (docData[key]?.seconds !== undefined && docData[key]?.nanoseconds !== undefined) {
+          docData[key] = new Date(docData[key].seconds * 1000).toLocaleString("pt-BR");
+        }
+      });
+      return { ...docData, id: doc.id };
+    })
+    .sort((a, b) => Number(a.numero) - Number(b.numero)) // ✅ sort no array mapeado
+);
 
     } catch (error) {
       console.error("Erro ao buscar metas: ", error);

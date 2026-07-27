@@ -191,6 +191,7 @@ export default function EditPlanosGeraisModal({
               className="campo_input"
               value={gv("status-2026-1")}
               onChange={(e) => handleChange("status-2026-1", e.target.value)}
+             
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>

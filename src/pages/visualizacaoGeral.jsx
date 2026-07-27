@@ -69,6 +69,7 @@ useEffect(() => {
   return { ...data, id: docSnap.id };
 });
 
+dados.sort((a, b) => Number(a.numero) - Number(b.numero));
 setRows(dados);
     } catch (error) {
       console.error("Erro na busca geral:", error);

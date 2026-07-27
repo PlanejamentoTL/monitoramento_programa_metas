@@ -121,6 +121,66 @@ export default function EditPPALDOModal({
           </div>
 
 
+            <div className="destaque">
+                <h2>Meta do indicador</h2>
+           <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Meta Indicador 2026:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-fisica-2026")}
+              onChange={(e) => handleChange("meta-fisica-2026", e.target.value)}
+              
+              />
+          </div>
+
+
+            <div className="campo">
+                <label>Meta Indicador 2027:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-fisica-2027")}
+                    onChange={(e) => handleChange("meta-fisica-2027", e.target.value)}
+                    readOnly
+                />
+            </div>
+
+        
+
+            <div className="campo">
+            <label>Meta Indicador 2028:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-fisica-2028")}
+              onChange={(e) => handleChange("meta-fisica-2028", e.target.value)}
+              readOnly
+              />
+          </div>
+
+            <div className="campo">
+                <label>Meta Indicador 2029:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-fisica-2029")}
+                    onChange={(e) => handleChange("meta-fisica-2029", e.target.value)}
+                    readOnly
+                   
+                />
+            </div>
+         </div>
+
+         </div> 
+
+
            <div className="activity-data" style={{ alignContent:"center"}} >
 
             <div className="campo">

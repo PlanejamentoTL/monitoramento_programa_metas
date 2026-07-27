@@ -181,7 +181,7 @@ export default function EditPPAModal({
             <br />
             <select
               className="campo_input"
-              value={gv("status-2027-2")}
+              value={gv("status-2028-2")}
               onChange={(e) => handleChange("status-2028-2", e.target.value)}
               disabled
             >
@@ -232,8 +232,70 @@ export default function EditPPAModal({
            </div>
 
 
+             <div className="destaque">
+                <h2>Meta do indicador</h2>
            <div className="activity-data" style={{ alignContent:"center"}} >
 
+            <div className="campo">
+            <label>Meta Indicador 2026:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-fisica-2026")}
+              onChange={(e) => handleChange("meta-fisica-2026", e.target.value)}
+              
+              />
+          </div>
+
+
+            <div className="campo">
+                <label>Meta Indicador 2027:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-fisica-2027")}
+                    onChange={(e) => handleChange("meta-fisica-2027", e.target.value)}
+                    readOnly
+                />
+            </div>
+
+        
+
+            <div className="campo">
+            <label>Meta Indicador 2028:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-fisica-2028")}
+              onChange={(e) => handleChange("meta-fisica-2028", e.target.value)}
+              readOnly
+              />
+          </div>
+
+            <div className="campo">
+                <label>Meta Indicador 2029:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-fisica-2029")}
+                    onChange={(e) => handleChange("meta-fisica-2029", e.target.value)}
+                    readOnly
+                   
+                />
+            </div>
+         </div>
+
+         </div>
+
+           
+
+            <h2>Resultado do indicador</h2>
+           <div className="activity-data" style={{ alignContent:"center"}} >
+             
             <div className="campo">
             <label>Resultado Indicador 2026-1*:</label>
             <br />
