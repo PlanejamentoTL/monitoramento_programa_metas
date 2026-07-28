@@ -42,7 +42,7 @@ export default function LoginLocal() {
         <a href="https://imgbox.com/CGKKTGS0" target="_blank" rel="noreferrer">
           <img
             className="img-login"
-            src="https://images2.imgbox.com/f9/ba/L0DP1bQd_o.png"
+            src="https://i.ibb.co/CphSWNsZ/programa-metas-limpo-1.png"
             alt="logo"
           />
         </a>

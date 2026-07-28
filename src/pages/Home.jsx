@@ -322,7 +322,7 @@ const refresh = useCallback(async () => {
         
           <div >
             <img className="logo_image"
-              src="https://images2.imgbox.com/f9/ba/L0DP1bQd_o.png"
+              src="https://i.ibb.co/CphSWNsZ/programa-metas-limpo-1.png"
               alt="logo"
             />
           </div>
