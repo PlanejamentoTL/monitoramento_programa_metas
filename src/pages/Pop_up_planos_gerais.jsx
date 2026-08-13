@@ -74,6 +74,15 @@ export default function EditPlanosGeraisModal({
     onChangeField?.(k, v);
   }
 
+  function handleSave() {
+    const planoAcao = String(gv("plano-acao")).trim();
+    if (!planoAcao) {
+      alert(`Preencha o campo "Plano de ação" antes de salvar.`);
+      return;
+    }
+    onSave?.();
+  }
+
   return (
     <div id="popup-container-PG" className="popup-overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
@@ -449,7 +458,7 @@ export default function EditPlanosGeraisModal({
           <button
             id="btnsalvar"
             type="button"
-            onClick={onSave}
+            onClick={handleSave}
             className={loading ? "loading" : ""}
             disabled={loading}
           >

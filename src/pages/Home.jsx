@@ -12,7 +12,8 @@ import Footer from "./footer";
 import PainelMetas from "./PainelMetas";
 import { db } from "../services/firebase";
 import { collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore"; 
-import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas } from "react-icons/fa";
+import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import { isMetaCompleta } from "../utils/metaStatus";
 
 
 
@@ -427,7 +428,9 @@ const refresh = useCallback(async () => {
         <div className="metas">
 {rows.map((row) => (
   <div className="meta" key={row.id} onClick={() => openModal(row)}>
-    {/* Use nomes minúsculos se foi assim que salvamos no Firestore */}
+
+
+    <div className="meta-info">
     <span> {row.numero} - </span>
       {plano === "plano-governo" && <span>{row.objetivo}</span>}
       {plano !== "plano-governo" && <span>{row.meta}</span>}
@@ -450,6 +453,22 @@ const refresh = useCallback(async () => {
     <br/>
     <span> Previsão de conclusão: {row["data-conclusao"]}</span>
   </div>
+
+      <div className="meta-status-icon-container" >
+    {isMetaCompleta(row, plano) ? (
+      <FaCheckCircle
+        className="meta-status-icon meta-status-ok"
+        title="Campo do semestre atual preenchido"
+      />
+    ) : (
+      <FaExclamationTriangle
+        className="meta-status-icon meta-status-pendente"
+        title="Campo do semestre atual pendente"
+      />
+    )}
+     </div> 
+  </div>
+  
 ))}
 
             

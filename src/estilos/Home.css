@@ -127,11 +127,49 @@
 
     height: auto;
     box-shadow:inset;
-   
+    position: relative;
     margin: 2%;
     padding: 2%;
     background-color: #f8f9fa;
+    
     border-radius: 9px;
+    display: flex;
+}
+
+.meta-info{
+    
+    width: 100%;
+    
+}
+
+.meta-status-icon-container{
+     display: flex;
+      align-items: center;
+    justify-content: center;
+   
+    height: 100%;
+
+   
+   
+
+
+}
+
+.meta-status-icon{
+  
+   
+    top: 12px;
+    right: 12px;
+    font-size: 2.5rem;
+    
+}
+
+.meta-status-ok{
+    color: #28a745;
+}
+
+.meta-status-pendente{
+    color: #ffc107;
 }
 
    .horizontal-line {

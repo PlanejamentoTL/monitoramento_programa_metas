@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import "../estilos/pop-up.css";
+import { PERIODO_ATUAL } from "../config/periodoAtual";
 
 export default function EditPPAModal({
   isOpen,
@@ -21,6 +22,16 @@ export default function EditPPAModal({
 
   function handleChange(k, v) {
     onChangeField?.(k, v);
+  }
+
+  function handleSave() {
+    const campoResultado = `resultado-indicador-${PERIODO_ATUAL}`;
+    const resultado = String(gv(campoResultado)).trim();
+    if (!resultado) {
+      alert(`Preencha o campo "Resultado Indicador ${PERIODO_ATUAL}" antes de salvar.`);
+      return;
+    }
+    onSave?.();
   }
 
   return (
@@ -589,7 +600,7 @@ export default function EditPPAModal({
           <button
             id="btnsalvar"
             type="button"
-            onClick={onSave}
+            onClick={handleSave}
             className={loading ? "loading" : ""}
             disabled={loading}
           >

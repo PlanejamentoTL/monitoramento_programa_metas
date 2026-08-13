@@ -12,7 +12,8 @@ import Footer from "./footer";
 import PainelMetas from "./PainelMetas";
 import { db } from "../services/firebase";
 import { collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore"; 
-import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas } from "react-icons/fa";
+import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
+import { isMetaCompleta } from "../utils/metaStatus";
 
 
 
@@ -450,8 +451,8 @@ function mapeiaDadosPlano(){
 
         
           <div >
-            <img className="logo_image"
-              src="https://images2.imgbox.com/f9/ba/L0DP1bQd_o.png"
+              <img className="logo_image"
+              src="https://i.ibb.co/CphSWNsZ/programa-metas-limpo-1.png"
               alt="logo"
             />
           </div>
@@ -598,38 +599,56 @@ function mapeiaDadosPlano(){
 
        
       
-        <div className="metas">
-{rows.map((row) => (
-  <div className="meta" key={row.id} onClick={() => openModal(row)}>
-    {/* Use nomes minúsculos se foi assim que salvamos no Firestore */}
-    <span> {row.numero} - </span>
-    <span> {row.meta} {row.objetivo} </span>
-    <br/><br/>
-
-    <div className="status" style={{
-      background: {
-        "Concluída": "rgba(0, 226, 0, 0.7)",
-        "Em Partes": "rgba(0, 96, 163, 0.7 )",
-        "Planejada": "rgba(255, 255, 0, 0.7)",
-        "Não Contemplada": "rgba(232, 36, 36, 0.7 )"
-      }[row["status-2026-1"]] || "gray", // Adicionado fallback        
-      padding: "8px",
-      borderRadius: "5px",
-      color: "#000",
-    }}>
-      <strong>Status:</strong> {row["status-2026-1"]}
-    </div>
-    <br/>
-    <span> Previsão de conclusão: {row["data-conclusao"]}</span>
-    <br/>
-    <span> Secretaria: {row["secretaria-responsavel"]}</span>
-  </div>
-))}
-
+         <div className="metas">
+        {rows.map((row) => (
+          <div className="meta" key={row.id} onClick={() => openModal(row)}>
+        
+        
+            <div className="meta-info">
+            <span> {row.numero} - </span>
+              {plano === "plano-governo" && <span>{row.objetivo}</span>}
+              {plano !== "plano-governo" && <span>{row.meta}</span>}
             
-            
-
-        </div>
+            <br/><br/>
+        
+            <div className="status" style={{
+              background: {
+                "Concluída": "rgba(0, 226, 0, 0.7)",
+                "Em Partes": "rgba(0, 96, 163, 0.7 )",
+                "Planejada": "rgba(255, 255, 0, 0.7)",
+                "Não Contemplada": "rgba(232, 36, 36, 0.7 )"
+              }[row["status-2026-1"]] || "gray", // Adicionado fallback        
+              padding: "8px",
+              borderRadius: "5px",
+              color: "#000",
+            }}>
+              <strong>Status:</strong> {row["status-2026-1"]}
+            </div>
+            <br/>
+            <span> Previsão de conclusão: {row["data-conclusao"]}</span>
+          </div>
+        
+              <div className="meta-status-icon-container" >
+            {isMetaCompleta(row, plano) ? (
+              <FaCheckCircle
+                className="meta-status-icon meta-status-ok"
+                title="Campo do semestre atual preenchido"
+              />
+            ) : (
+              <FaExclamationTriangle
+                className="meta-status-icon meta-status-pendente"
+                title="Campo do semestre atual pendente"
+              />
+            )}
+             </div> 
+          </div>
+          
+        ))}
+        
+                    
+                    
+        
+                </div>
 
          <Footer/>
 
