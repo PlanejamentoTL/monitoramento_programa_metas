@@ -6,7 +6,7 @@
   { "email": "bruna.queiroz@treslagoas.ms.gov.br", "senha": "912345", "nome": "Bruna", "secretaria": "SMS", "role": "user", "ativo": true },
   { "email": "francisneide.fioravante@treslagoas.ms.gov.br", "senha": "507832", "nome": "Francisneide", "secretaria": "SMS", "role": "user", "ativo": true },
   { "email": "monique.oliveira@treslagoas.ms.gov.br", "senha": "689041", "nome": "Monique", "secretaria": "SEMEC", "role": "user", "ativo": true },
-  { "email": "daiane.ramos@treslagoas.ms.gov.br", "senha": "203198", "nome": "Daiane", "secretaria": "Gabinete", "role": "user", "ativo": true },
+  { "email": "daiane.ramos@treslagoas.ms.gov.br", "senha": "203198", "nome": "Daiane", "secretaria": "SMAS", "role": "user", "ativo": true },
   { "email": "angela.brasil@treslagoas.ms.gov.br", "senha": "574926", "nome": "Ângela", "secretaria": "SGI", "role": "user", "ativo": true },
   { "email": "thais.hirade@treslagoas.ms.gov.br", "senha": "810237", "nome": "Thais", "secretaria": "SEMEA", "role": "user", "ativo": true },
   { "email": "amanda.pivotto@treslagoas.ms.gov.br", "senha": "465789", "nome": "Amanda", "secretaria": "SEMEA-AGRO", "role": "user", "ativo": true },
