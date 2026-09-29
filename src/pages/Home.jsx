@@ -10,8 +10,7 @@ import '../estilos/Home.css';
 import { MdOutlineExitToApp } from "react-icons/md";
 import Footer from "./footer";
 import PainelMetas from "./PainelMetas";
-import { db } from "../services/firebase";
-import { collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore"; 
+import { useDadosMetas, atualizarMeta } from "../services/consultas";
 import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { isMetaCompleta } from "../utils/metaStatus";
 
@@ -38,57 +37,12 @@ export default function Home() {
   const [selected, setSelected] = useState({});
   const [saving, setSaving] = useState(false);
   const [secretariaSelecionada, setsecretariaSelecionada] = useState(user.secretaria);
-  const [rows, setRows] = useState([]);
   const [plano, setPlano] = useState("plano-governo");
   const [isAdmin, setisAdmin] = useState(false);
 
 
 
-useEffect(() => {
-  const getMetas = async () => {
-    try {
-      // 1. Referência básica da coleção baseada no plano
-      const collectionRef = collection(db, plano);
-      let q;
-
-      // 2. Lógica de Filtro: Se "Todas" estiver selecionada, busca tudo. 
-      // Caso contrário, aplica o filtro 'where'
-      if (secretariaSelecionada === "Todas" || !secretariaSelecionada) {
-        q = query(collectionRef);
-      } else {
-        q = query(
-          collectionRef, 
-          where("secretaria-responsavel", "==", secretariaSelecionada)
-        );
-      }
-
-      const data = await getDocs(q);
-
-    
-
-      
-setRows(
-  data.docs
-    .map((doc) => {
-      const docData = doc.data();
-      Object.keys(docData).forEach(key => {
-        if (docData[key]?.seconds !== undefined && docData[key]?.nanoseconds !== undefined) {
-          docData[key] = new Date(docData[key].seconds * 1000).toLocaleString("pt-BR");
-        }
-      });
-      return { ...docData, id: doc.id };
-    })
-    .sort((a, b) => Number(a.numero) - Number(b.numero)) // ✅ sort no array mapeado
-);
-
-    } catch (error) {
-      console.error("Erro ao buscar metas: ", error);
-    }
-  };
-
-  // O useEffect agora "escuta" tanto a mudança de plano quanto de secretaria
-  getMetas();
-}, [plano, secretariaSelecionada]);
+const { rows, setRows } = useDadosMetas(plano, secretariaSelecionada);
 
 useEffect(()=> {
 
@@ -149,8 +103,6 @@ async function onSave() {
 
     setSaving(true);
 
-    const docRef = doc(db, plano, selected.id);
-
     const dadosAtualizados = {
       ...selected,
       "data-ultima-atualizacao": new Date().toLocaleString("pt-BR"),
@@ -159,7 +111,7 @@ async function onSave() {
 
     console.log("Verificando link antes de salvar:", dadosAtualizados["documentos-comprobatorios"]);
 
-    await updateDoc(docRef, dadosAtualizados);
+    await atualizarMeta(plano, selected.id, dadosAtualizados);
 
     /*Para que a lista de metas na tela atualize sem precisar dar reload*/
     setRows(prevRows => 

@@ -10,8 +10,7 @@ import '../estilos/Home.css';
 import { MdOutlineExitToApp } from "react-icons/md";
 import Footer from "./footer";
 import PainelMetas from "./PainelMetas";
-import { db } from "../services/firebase";
-import { collection, getDocs, query, updateDoc, where, doc } from "firebase/firestore"; 
+import { useDadosMetas, atualizarMeta } from "../services/consultas";
 import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { isMetaCompleta } from "../utils/metaStatus";
 
@@ -35,50 +34,10 @@ const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
   const [plano, setPlano] = useState("plano-governo");
   const [secretariaFiltro, setSecretariaFiltro] = useState("Todas");
-  const [rows, setRows] = useState([]);
   const [isAdmin, setisAdmin] = useState(false);
 
 
-useEffect(() => {
-  const fetchDadosGerais = async () => {
-    try {
-      const collectionRef = collection(db, plano);
-      let q;
-
-      if (secretariaFiltro === "Todas") {
-        // Busca tudo do plano selecionado sem filtro de secretaria
-        q = query(collectionRef);
-      } else {
-        // Filtra pela secretaria escolhida no select
-        q = query(
-          collectionRef, 
-          where("secretaria-responsavel", "==", secretariaFiltro)
-        );
-      }
-
-      const querySnapshot = await getDocs(q);
-     const dados = querySnapshot.docs.map(docSnap => {
-  const data = docSnap.data();
-
-  // Converte Timestamps para string legível
-  Object.keys(data).forEach(key => {
-    if (data[key]?.seconds !== undefined && data[key]?.nanoseconds !== undefined) {
-      data[key] = new Date(data[key].seconds * 1000).toLocaleString("pt-BR");
-    }
-  });
-
-  return { ...data, id: docSnap.id };
-});
-
-dados.sort((a, b) => Number(a.numero) - Number(b.numero));
-setRows(dados);
-    } catch (error) {
-      console.error("Erro na busca geral:", error);
-    }
-  };
-
-  fetchDadosGerais();
-}, [plano, secretariaFiltro]); // Atualiza sempre que mudar o plano ou a secretaria
+const { rows, setRows } = useDadosMetas(plano, secretariaFiltro);
 
 useEffect(()=> {
 
@@ -139,8 +98,6 @@ async function onSave() {
 
     setSaving(true);
 
-    const docRef = doc(db, plano, selected.id);
-
     const dadosAtualizados = {
       ...selected,
       "data-ultima-atualizacao": new Date().toLocaleString("pt-BR"),
@@ -149,7 +106,7 @@ async function onSave() {
 
     console.log("Verificando link antes de salvar:", dadosAtualizados["documentos-comprobatorios"]);
 
-    await updateDoc(docRef, dadosAtualizados);
+    await atualizarMeta(plano, selected.id, dadosAtualizados);
 
     /*Para que a lista de metas na tela atualize sem precisar dar reload*/
     setRows(prevRows => 
