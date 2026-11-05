@@ -10,7 +10,9 @@ import '../estilos/Home.css';
 import { MdOutlineExitToApp } from "react-icons/md";
 import Footer from "./footer";
 import PainelMetas from "./PainelMetas";
-import { useDadosMetas, atualizarMeta } from "../services/consultas";
+import { useDadosMetas, atualizarMeta, camposAlterados } from "../services/consultas";
+import { calcularPorcentagemExecucao } from "../utils/etapas";
+import { PERIODO_ATUAL } from "../config/periodoAtual";
 import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { isMetaCompleta } from "../utils/metaStatus";
 
@@ -55,7 +57,15 @@ useEffect(()=> {
 
 
 function openModal(row) {
-  setSelected(row);
+  // Plano de Governo e planos gerais: a porcentagem de execução é sempre
+  // recalculada a partir das 5 etapas (soma dos pesos das etapas "Concluída").
+  // PPA e LDO não possuem esse campo.
+  const temPorcentagem = plano !== "plano-plurianual" && plano !== "ldo-2026";
+  setSelected(
+    temPorcentagem
+      ? { ...row, "porcentagem-execucao": calcularPorcentagemExecucao(row) }
+      : row
+  );
   // Deve bater com o 'value' do <select>
   if (plano === "plano-governo") {
      setIsModalOpen(true);
@@ -98,8 +108,10 @@ async function onSave() {
 
     setSaving(true);
 
+    // Grava apenas os campos alterados no modal (não sobrescreve o documento inteiro)
+    const original = rows.find((r) => r.id === selected.id) || {};
     const dadosAtualizados = {
-      ...selected,
+      ...camposAlterados(original, selected),
       "data-ultima-atualizacao": new Date().toLocaleString("pt-BR"),
       "responsavel-ultima-atualizacao": user.nome || "Anônimo",
     };
@@ -110,7 +122,7 @@ async function onSave() {
 
     /*Para que a lista de metas na tela atualize sem precisar dar reload*/
     setRows(prevRows => 
-      prevRows.map(item => item.id === selected.id ? dadosAtualizados : item)
+      prevRows.map(item => item.id === selected.id ? { ...item, ...dadosAtualizados } : item)
     );
    
       alert("Atualizado com sucesso!");
@@ -574,12 +586,12 @@ function mapeiaDadosPlano(){
                 "Em Partes": "rgba(0, 96, 163, 0.7 )",
                 "Planejada": "rgba(255, 255, 0, 0.7)",
                 "Não Contemplada": "rgba(232, 36, 36, 0.7 )"
-              }[row["status-2026-1"]] || "gray", // Adicionado fallback        
+              }[row[`status-${PERIODO_ATUAL}`]] || "gray", // Adicionado fallback        
               padding: "8px",
               borderRadius: "5px",
               color: "#000",
             }}>
-              <strong>Status:</strong> {row["status-2026-1"]}
+              <strong>Status:</strong> {row[`status-${PERIODO_ATUAL}`]}
             </div>
             <br/>
             <span> Previsão de conclusão: {row["data-conclusao"]}</span>
