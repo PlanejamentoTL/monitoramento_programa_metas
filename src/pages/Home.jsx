@@ -15,6 +15,7 @@ import { calcularPorcentagemExecucao } from "../utils/etapas";
 import { PERIODO_ATUAL } from "../config/periodoAtual";
 import { FaUserAlt, FaHouseUser, FaFileAlt, FaGlobeAmericas, FaCheckCircle, FaExclamationTriangle } from "react-icons/fa";
 import { isMetaCompleta } from "../utils/metaStatus";
+import { gerarPlanilha } from "../utils/planilha";
 
 
 
@@ -373,6 +374,22 @@ const refresh = useCallback(async () => {
 
   {/* Adicione os outros mapeando para as coleções corretas */}
 </select>
+
+<button
+  type="button"
+  onClick={() => gerarPlanilha(rows, plano, secretariaSelecionada)}
+  style={{
+    padding: "8px 16px",
+    backgroundColor: "#1e7e34",
+    color: "#fff",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    fontWeight: "bold",
+  }}
+>
+  Gerar Planilha
+</button>
 
                  <hr className="horizontal-line" />
 
