@@ -2,6 +2,10 @@ import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import "../estilos/pop-up.css";
 import { PERIODO_ATUAL } from "../config/periodoAtual";
+import EtapasMeta from "../components/EtapasMeta";
+import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
+import AvisoValidacao from "../components/AvisoValidacao";
+import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
 
 export default function EditPPALDOModal({
   isOpen,
@@ -13,7 +17,7 @@ export default function EditPPALDOModal({
   uploadParaDrive,
 }) {
 
-    const [uploading, setLoading] = useState(false);
+  const [aviso, setAviso] = useState(null);
   if (!isOpen) return null;
     console.log("Dados recebidos no Modal:", meta);
 
@@ -24,11 +28,17 @@ export default function EditPPALDOModal({
     onChangeField?.(k, v);
   }
 
+  // Campos obrigatórios deste modal (além das etapas e do documento, quando exigido)
+  const camposObrigatorios = [
+    campoStatusAtual(),
+    { key: "meta-fisica-2026", label: "Meta Indicador 2026" },
+    { key: `resultado-indicador-${PERIODO_ATUAL}`, label: `Resultado Indicador ${PERIODO_ATUAL}` },
+  ];
+
   function handleSave() {
-    const campoResultado = `resultado-indicador-${PERIODO_ATUAL}`;
-    const resultado = String(gv(campoResultado)).trim();
-    if (!resultado) {
-      alert(`Preencha o campo "Resultado Indicador ${PERIODO_ATUAL}" antes de salvar.`);
+    const resultado = validarMeta(meta, { campos: camposObrigatorios });
+    if (!resultado.ok) {
+      setAviso(resultado);
       return;
     }
     onSave?.();
@@ -37,6 +47,7 @@ export default function EditPPALDOModal({
   return (
     <div id="popup-container-PG" className="popup-overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <AvisoValidacao resultado={aviso} onFechar={() => setAviso(null)} />
         {/* Cabeçalho */}
         <div className="popup-header">
           <h2>Editar Dados - LDO</h2>
@@ -92,31 +103,13 @@ export default function EditPPALDOModal({
 
           <div className="activity-data" style={{ alignContent:"center"}} > 
           <div className="campo">
-            <label>Status 2026-1*:</label>
+            <label>Status 2026-1:</label>
             <br />
             <br />
             <select
               className="campo_input"
               value={gv("status-2026-1")}
               onChange={(e) => handleChange("status-2026-1", e.target.value)}
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-
-             <div className="campo" >
-            <label>Status 2026-2:</label>
-            <br />
-            <br />
-            <select
-              className="campo_input"
-              value={gv("status-2026-2")}
-              onChange={(e) => handleChange("status-2026-2", e.target.value)}
               disabled
             >
               <option value="">Selecionar</option>
@@ -128,9 +121,28 @@ export default function EditPPALDOModal({
           </div>
 
 
+             <div className="campo" >
+            <label>Status 2026-2*:</label>
+            <br />
+            <br />
+            <select
+              className="campo_input"
+              value={gv("status-2026-2")}
+              onChange={(e) => handleChange("status-2026-2", e.target.value)}
+            >
+              <option value="">Selecionar</option>
+              <option value="Concluída">Concluída</option>
+              <option value="Em Partes">Em Partes</option>
+              <option value="Planejada">Planejada</option>
+              <option value="Não Contemplada">Não Contemplada</option>
+            </select>
+          </div>
+
+
 
           </div>
 
+          <EtapasMeta meta={meta} onChangeField={handleChange} />
 
             <div className="destaque">
                 <h2>Meta do indicador</h2>
@@ -195,26 +207,26 @@ export default function EditPPALDOModal({
            <div className="activity-data" style={{ alignContent:"center"}} >
 
             <div className="campo">
-            <label>Resultado Indicador 2026-1*:</label>
+            <label>Resultado Indicador 2026-1:</label>
             <br />
             <br />
             <input
               className="campo_input"
               value={gv("resultado-indicador-2026-1")}
               onChange={(e) => handleChange("resultado-indicador-2026-1", e.target.value)}
+              readOnly
           
             />
           </div>
 
             <div className="campo">
-            <label>Resultado Indicador 2026-2:</label>
+            <label>Resultado Indicador 2026-2*:</label>
             <br />
             <br />
             <input
               className="campo_input"
               value={gv("resultado-indicador-2026-2")}
               onChange={(e) => handleChange("resultado-indicador-2026-2", e.target.value)}
-              readOnly
           
             />
           </div>
@@ -223,51 +235,11 @@ export default function EditPPALDOModal({
            </div>
 
       
-          <div className="campo">
-            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
-            <br />
-            <br />
-            <input
-  id="campo_documento_comprobatorio2"
-  className="campo_input"
-  type="file"
-  accept=".pdf"
- onChange={async (e) => {
-  const f = e.target.files?.[0];
-  if (f) {
-    setLoading(true); // Ative um spinner
-    const resultado = await uploadParaDrive(f);
-    
-    if (resultado.ok) {
-      // Salva o LINK no Firestore através do onChangeField
-      onChangeField("documentos-comprobatorios", resultado.url);
-      alert("Arquivo salvo no Google Drive!");
-    } else {
-      alert("Erro no upload para o Drive");
-    }
-    setLoading(false);
-  }
-}}
-/>
-
-{/* Feedback Visual do Upload */}
-  {uploading && (
-    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <div className="loader" style={{ width: '20px', height: '20px' }}></div> 
-      <span style={{ color: '#666', fontSize: '13px' }}>Enviando documento para o Drive...</span>
-    </div>
-  )}
-
-
-{/* Dentro do Modal, abaixo do input file */}
-{gv("documentos-comprobatorios") && (
-  <div style={{ marginTop: '10px', color: 'blue', fontSize: '12px' }}>
-    <i className="uil uil-link"></i> Link gerado: 
-    <a href={gv("documentos-comprobatorios")} target="_blank" rel="noreferrer"> Visualizar Arquivo</a>
-  </div>
-)}
-
-          </div>
+          <DocumentoComprobatorio
+            meta={meta}
+            onChangeField={onChangeField}
+            uploadParaDrive={uploadParaDrive}
+          />
 
        
           <div className="activity-data">

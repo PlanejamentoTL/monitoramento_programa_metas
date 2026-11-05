@@ -35,6 +35,17 @@ export async function buscarMetas(plano, secretaria) {
     .sort((a, b) => Number(a.numero) - Number(b.numero));
 }
 
+// Retorna apenas os campos de `atual` que diferem de `original` (ignora o "id"),
+// para que o updateDoc não sobrescreva o documento inteiro.
+export function camposAlterados(original = {}, atual = {}) {
+  const alterados = {};
+  Object.keys(atual).forEach((k) => {
+    if (k === "id") return;
+    if ((atual[k] ?? "") !== (original?.[k] ?? "")) alterados[k] = atual[k];
+  });
+  return alterados;
+}
+
 export async function atualizarMeta(plano, id, dados) {
   await updateDoc(doc(db, plano, id), dados);
 }

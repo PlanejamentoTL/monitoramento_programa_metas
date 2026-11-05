@@ -2,6 +2,11 @@
 import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import '../estilos/pop-up.css';
+import { PERIODO_ATUAL } from "../config/periodoAtual";
+import EtapasMeta from "../components/EtapasMeta";
+import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
+import AvisoValidacao from "../components/AvisoValidacao";
+import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
 
 
 
@@ -15,7 +20,7 @@ export default function EditPlanosGeraisModal({
    uploadParaDrive,
 }) {
 
-  const [uploading, setLoading] = useState(false);
+  const [aviso, setAviso] = useState(null);
   if (!isOpen) return null;
 
   // helpers
@@ -74,10 +79,27 @@ export default function EditPlanosGeraisModal({
     onChangeField?.(k, v);
   }
 
+  // Campos obrigatórios deste modal (além das etapas e do documento, quando exigido)
+  const camposObrigatorios = [
+    campoStatusAtual(),
+    { key: "indicador", label: "Indicador" },
+    { key: "un-medida", label: "Unidade de Medida" },
+    { key: "meta-indicador-2025", label: "Meta Indicador 2025" },
+    { key: "meta-indicador-2026", label: "Meta Indicador 2026" },
+    { key: "meta-indicador-2027", label: "Meta Indicador 2027" },
+    { key: "meta-indicador-2028", label: "Meta Indicador 2028" },
+    { key: `resultado-indicador-${PERIODO_ATUAL}`, label: `Resultado Indicador ${PERIODO_ATUAL}` },
+    { key: "meta-financeira-2025", label: "Meta Financeira 2025" },
+    { key: "meta-financeira-2026", label: "Meta Financeira 2026" },
+    { key: "meta-financeira-2027", label: "Meta Financeira 2027" },
+    { key: "meta-financeira-2028", label: "Meta Financeira 2028" },
+    { key: "plano-acao", label: "Plano de ação" },
+  ];
+
   function handleSave() {
-    const planoAcao = String(gv("plano-acao")).trim();
-    if (!planoAcao) {
-      alert(`Preencha o campo "Plano de ação" antes de salvar.`);
+    const resultado = validarMeta(meta, { campos: camposObrigatorios });
+    if (!resultado.ok) {
+      setAviso(resultado);
       return;
     }
     onSave?.();
@@ -86,6 +108,7 @@ export default function EditPlanosGeraisModal({
   return (
     <div id="popup-container-PG" className="popup-overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <AvisoValidacao resultado={aviso} onFechar={() => setAviso(null)} />
         {/* Cabeçalho fixo */}
         <div className="popup-header">
           <h2>Editar Dados - Planos gerais</h2>
@@ -141,7 +164,41 @@ export default function EditPlanosGeraisModal({
               {gv("ods-vinculados")}
               </span>
             </div>
+
+
           </div>
+
+          <div>
+            <div className="activity-data">
+            <div className="campo">
+              <label>Indicador:</label>
+              <br />
+              <br />
+              <input
+                id="campo_indicador_meta"
+                className="campo_input"
+                type="text"
+                value={gv("indicador")}
+                onChange={(e) =>
+                  handleChange("indicador", e.target.value)
+                }
+              />
+            </div>
+
+            <div className="campo">
+              <label>Unidade de Medida:</label>
+              <br />
+              <br />
+              <input
+                id="campo_unidade_medida_meta"
+                className="campo_input"
+                type="text"
+                value={gv("un-medida")}
+                onChange={(e) => handleChange("un-medida", e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
 
 
 
@@ -192,7 +249,7 @@ export default function EditPlanosGeraisModal({
           </div>
 
             <div className="campo">
-            <label>Status 2026-1*:</label>
+            <label>Status 2026-1:</label>
             <br />
             <br />
             <select
@@ -200,7 +257,7 @@ export default function EditPlanosGeraisModal({
               className="campo_input"
               value={gv("status-2026-1")}
               onChange={(e) => handleChange("status-2026-1", e.target.value)}
-             
+              disabled
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>
@@ -211,7 +268,7 @@ export default function EditPlanosGeraisModal({
           </div>
 
           <div className="campo">
-            <label>Status 2026-2:</label>
+            <label>Status 2026-2*:</label>
             <br />
             <br />
             <select
@@ -219,7 +276,6 @@ export default function EditPlanosGeraisModal({
               className="campo_input"
               value={gv("status-2026-2")}
               onChange={(e) => handleChange("status-2026-2", e.target.value)}
-              disabled
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>
@@ -311,24 +367,245 @@ export default function EditPlanosGeraisModal({
 
         </div>
 
+        <EtapasMeta meta={meta} onChangeField={handleChange} atualizarPorcentagem />
+
+        <div className="destaque">
+                <h2>Meta do indicador</h2>
+           <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Meta Indicador 2025:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-indicador-2025")}
+              onChange={(e) => handleChange("meta-indicador-2025", e.target.value)}
+              
+              />
+          </div>
+
+
+            <div className="campo">
+                <label>Meta Indicador 2026:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-indicador-2026")}
+                    onChange={(e) => handleChange("meta-indicador-2026", e.target.value)}
+                    
+                />
+            </div>
+
+        
+
+            <div className="campo">
+            <label>Meta Indicador 2027:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-indicador-2027")}
+              onChange={(e) => handleChange("meta-indicador-2027", e.target.value)}
+            
+              />
+          </div>
+
+            <div className="campo">
+                <label>Meta Indicador 2028:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-indicador-2028")}
+                    onChange={(e) => handleChange("meta-indicador-2028", e.target.value)}
+                   
+                   
+                />
+            </div>
+         </div>
+
+         </div>
+
+
+         <h2>Resultado do indicador</h2>
+           <div className="activity-data" style={{ alignContent:"center"}} >
+             
+            <div className="campo">
+            <label>Resultado Indicador 2025-1:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("resultado-indicador-2025-1")}
+              onChange={(e) => handleChange("resultado-indicador-2025-1", e.target.value)}
+              readOnly
+              
+              />
+          </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2025-2:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2025-2")}
+                    onChange={(e) => handleChange("resultado-indicador-2025-2", e.target.value)}
+                    readOnly
+                   
+                />
+            </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2026-1:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2026-1")}
+                    onChange={(e) => handleChange("resultado-indicador-2026-1", e.target.value)}
+                    readOnly
+                    
+                />
+            </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2026-2*:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2026-2")}
+                    onChange={(e) => handleChange("resultado-indicador-2026-2", e.target.value)}
+                    
+                />
+            </div>
+         </div>
+
+           <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Resultado Indicador 2027-1:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("resultado-indicador-2027-1")}
+              onChange={(e) => handleChange("resultado-indicador-2027-1", e.target.value)}
+              readOnly
+             
+              />
+          </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2027-2:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2027-2")}
+                    onChange={(e) => handleChange("resultado-indicador-2027-2", e.target.value)}
+                    readOnly
+                   
+                    
+                />
+            </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2028-1:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2028-1")}
+                    onChange={(e) => handleChange("resultado-indicador-2028-1", e.target.value)}
+                    readOnly
+                    
+                   
+                />
+            </div>
+
+            <div className="campo">
+                <label>Resultado Indicador 2028-2:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("resultado-indicador-2028-2")}
+                    onChange={(e) => handleChange("resultado-indicador-2028-2", e.target.value)}
+                    readOnly
+                    
+                    
+                />
+            </div>
+         </div>
+
+
+          <div className="destaque">
+                <h2>Meta Financeira Anual</h2>
+           <div className="activity-data" style={{ alignContent:"center"}} >
+
+            <div className="campo">
+            <label>Meta Financeira 2025:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-financeira-2025")}
+              onChange={(e) => handleChange("meta-financeira-2025", e.target.value)}
+              
+              />
+          </div>
+
+
+            <div className="campo">
+                <label>Meta Financeira 2026:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-financeira-2026")}
+                    onChange={(e) => handleChange("meta-financeira-2026", e.target.value)}
+                    
+                />
+            </div>
+
+        
+
+            <div className="campo">
+            <label>Meta Financeira 2027:</label>
+            <br />
+            <br />
+            <input
+              className="campo_input"
+              value={gv("meta-financeira-2027")}
+              onChange={(e) => handleChange("meta-financeira-2027", e.target.value)}
+            
+              />
+          </div>
+
+            <div className="campo">
+                <label>Meta Financeira 2028:</label>
+                <br />
+                <br />
+                <input
+                    className="campo_input"
+                    value={gv("meta-financeira-2028")}
+                    onChange={(e) => handleChange("meta-financeira-2028", e.target.value)}
+                   
+                   
+                />
+            </div>
+         </div>
+
+         </div>
+
           
 
 
               <div className="activity-data">
-            <div className="campo">
-              <label>Porcentagem de Execução:</label>
-              <br />
-              <br />
-              <input
-                id="campo_porcentagem_meta2"
-                className="campo_input"
-                type="text"
-                value={gv("porcentagem-execucao")}
-                onChange={(e) =>
-                  handleChange("porcentagem-execucao", e.target.value)
-                }
-              />
-            </div>
 
             <div className="campo">
               <label>Previsão de Conclusão:</label>
@@ -363,52 +640,11 @@ export default function EditPlanosGeraisModal({
 
          
 
-          {/* Documento comprobatório (file) — você pode guardar o nome do arquivo */}
-          <div className="campo">
-            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
-            <br />
-            <br />
-            <input
-  id="campo_documento_comprobatorio2"
-  className="campo_input"
-  type="file"
-  accept=".pdf"
- onChange={async (e) => {
-  const f = e.target.files?.[0];
-  if (f) {
-    setLoading(true); // Ative um spinner
-    const resultado = await uploadParaDrive(f);
-    
-    if (resultado.ok) {
-      // Salva o LINK no Firestore através do onChangeField
-      onChangeField("documentos-comprobatorios", resultado.url);
-      alert("Arquivo salvo no Google Drive!");
-    } else {
-      alert("Erro no upload para o Drive");
-    }
-    setLoading(false);
-  }
-}}
-/>
-
-{/* Feedback Visual do Upload */}
-  {uploading && (
-    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <div className="loader" style={{ width: '20px', height: '20px' }}></div> 
-      <span style={{ color: '#666', fontSize: '13px' }}>Enviando documento para o Drive...</span>
-    </div>
-  )}
-
-
-{/* Dentro do Modal, abaixo do input file */}
-{gv("documentos-comprobatorios") && (
-  <div style={{ marginTop: '10px', color: 'blue', fontSize: '12px' }}>
-    <i className="uil uil-link"></i> Link gerado: 
-    <a href={gv("documentos-comprobatorios")} target="_blank" rel="noreferrer"> Visualizar Arquivo</a>
-  </div>
-)}
-
-          </div>
+          <DocumentoComprobatorio
+            meta={meta}
+            onChangeField={onChangeField}
+            uploadParaDrive={uploadParaDrive}
+          />
 
           <div className="activity-data">
 
@@ -418,7 +654,7 @@ export default function EditPlanosGeraisModal({
               <br />
               <input
                 id="justificativa"
-                className="campo_input"
+                 className="campo_input"
               
                 value={gv("justificativa-nao-conclusao")}
                 onChange={(e) => handleChange("justificativa-nao-conclusao", e.target.value)}

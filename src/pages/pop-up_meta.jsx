@@ -1,6 +1,10 @@
 import React, { useMemo, useState } from "react";
 import { MdClose } from "react-icons/md";
 import "../estilos/pop-up.css";
+import EtapasMeta from "../components/EtapasMeta";
+import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
+import AvisoValidacao from "../components/AvisoValidacao";
+import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
 
 export default function EditPGModal({
   isOpen,
@@ -12,7 +16,7 @@ export default function EditPGModal({
   uploadParaDrive,
 }) {
 
-    const [uploading, setLoading] = useState(false);
+  const [aviso, setAviso] = useState(null);
   if (!isOpen) return null;
     console.log("Dados recebidos no Modal:", meta);
 
@@ -23,9 +27,24 @@ export default function EditPGModal({
     onChangeField?.(k, v);
   }
 
+  // Campos obrigatórios deste modal (além das etapas e do documento, quando exigido)
+  const camposObrigatorios = [
+    campoStatusAtual(),
+  ];
+
+  function handleSave() {
+    const resultado = validarMeta(meta, { campos: camposObrigatorios });
+    if (!resultado.ok) {
+      setAviso(resultado);
+      return;
+    }
+    onSave?.();
+  }
+
   return (
     <div id="popup-container-PG" className="popup-overlay" onClick={onClose}>
       <div className="popup" onClick={(e) => e.stopPropagation()}>
+        <AvisoValidacao resultado={aviso} onFechar={() => setAviso(null)} />
         {/* Cabeçalho */}
         <div className="popup-header">
           <h2>Editar Dados - Plano de Governo</h2>
@@ -106,7 +125,7 @@ export default function EditPGModal({
           </div>
 
             <div className="campo">
-            <label>Status 2026-1*:</label>
+            <label>Status 2026-1:</label>
             <br />
             <br />
             <select
@@ -114,6 +133,7 @@ export default function EditPGModal({
               className="campo_input"
               value={gv("status-2026-1")}
               onChange={(e) => handleChange("status-2026-1", e.target.value)}
+              disabled
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>
@@ -124,7 +144,7 @@ export default function EditPGModal({
           </div>
 
           <div className="campo">
-            <label>Status 2026-1:</label>
+            <label>Status 2026-2*:</label>
             <br />
             <br />
             <select
@@ -132,7 +152,6 @@ export default function EditPGModal({
               className="campo_input"
               value={gv("status-2026-2")}
               onChange={(e) => handleChange("status-2026-2", e.target.value)}
-              disabled
             >
               <option value="">Selecionar</option>
               <option value="Concluída">Concluída</option>
@@ -203,13 +222,13 @@ export default function EditPGModal({
           </div>
 
           <div className="campo">
-            <label>Status 2026-1:</label>
+            <label>Status 2028-2:</label>
             <br />
             <br />
             <select
               id="campo_status_meta2"
               className="campo_input"
-              value={gv("status-2026-2")}
+              value={gv("status-2028-2")}
               onChange={(e) => handleChange("status-2028-2", e.target.value)}
               disabled
             >
@@ -224,21 +243,12 @@ export default function EditPGModal({
 
         </div>
 
+          <EtapasMeta meta={meta} onChangeField={handleChange} atualizarPorcentagem />
+
           <br />
 
           {/* Porcentagem e Data */}
           <div className="activity-data">
-            <div className="campo">
-              <label>Porcentagem de Execução:</label>
-              <br />
-              <br />
-              <input
-                className="campo_input"
-                type="number"
-                value={gv("porcentagem-execucao")}
-                onChange={(e) => handleChange("porcentagem-execucao", e.target.value)}
-              />
-            </div>
 
             <div className="campo">
               <label>Previsão de Conclusão:</label>
@@ -254,52 +264,11 @@ export default function EditPGModal({
           </div>
 
 
-                    {/* Documento comprobatório (file) — você pode guardar o nome do arquivo */}
-          <div className="campo">
-            <label>Documento Comprobatório(Adicione apenas 1 documento):</label>
-            <br />
-            <br />
-            <input
-  id="campo_documento_comprobatorio2"
-  className="campo_input"
-  type="file"
-  accept=".pdf"
- onChange={async (e) => {
-  const f = e.target.files?.[0];
-  if (f) {
-    setLoading(true); // Ative um spinner
-    const resultado = await uploadParaDrive(f);
-    
-    if (resultado.ok) {
-      // Salva o LINK no Firestore através do onChangeField
-      onChangeField("documentos-comprobatorios", resultado.url);
-      alert("Arquivo salvo no Google Drive!");
-    } else {
-      alert("Erro no upload para o Drive");
-    }
-    setLoading(false);
-  }
-}}
-/>
-
-{/* Feedback Visual do Upload */}
-  {uploading && (
-    <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-      <div className="loader" style={{ width: '20px', height: '20px' }}></div> 
-      <span style={{ color: '#666', fontSize: '13px' }}>Enviando documento para o Drive...</span>
-    </div>
-  )}
-
-
-{/* Dentro do Modal, abaixo do input file */}
-{gv("documentos-comprobatorios") && (
-  <div style={{ marginTop: '10px', color: 'blue', fontSize: '12px' }}>
-    <i className="uil uil-link"></i> Link gerado: 
-    <a href={gv("documentos-comprobatorios")} target="_blank" rel="noreferrer"> Visualizar Arquivo</a>
-  </div>
-)}
-
-          </div>
+          <DocumentoComprobatorio
+            meta={meta}
+            onChangeField={onChangeField}
+            uploadParaDrive={uploadParaDrive}
+          />
 
           {/* Justificativa */}
           <div className="activity-data">
@@ -347,7 +316,7 @@ export default function EditPGModal({
           <button
             id="btnsalvar"
             type="button"
-            onClick={onSave}
+            onClick={handleSave}
             className={loading ? "loading" : ""}
             disabled={loading}
           >
