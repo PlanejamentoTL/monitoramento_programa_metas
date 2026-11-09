@@ -36,8 +36,8 @@
   { "email": "fernandabarbosa.obras@treslagoas.ms.gov.br", "senha": "123388", "nome": "Fernanda", "secretaria": "SEINTRA", "role": "user", "ativo": true },
   { "email": "Francesca.alkmin@treslagoas.ms.gov.br", "senha": "965388", "nome": "Francesca", "secretaria": "SGI", "role": "user", "ativo": true },
   { "email": "erica.silva@treslagoas.ms.gov.br", "senha": "968744", "nome": "Érica", "secretaria": "SEINTRA", "role": "user", "ativo": true },
-  { "email": "maria.marques@treslagoas.ms.gov.br", "senha": "968744", "nome": "Maria", "secretaria": "SEMEA-AGRO", "role": "user", "ativo": true },
-  { "email": "rafael.coene@treslagoas.ms.gov.br", "senha": "968744", "nome": "Rafael", "secretaria": "SEFIRC", "role": "user", "ativo": true },
-  { "email": "dgp.smas@treslagoas.ms.gov.br", "senha": "968744", "nome": "Mariana", "secretaria": "SMAS", "role": "user", "ativo": true }
+  { "email": "maria.marques@treslagoas.ms.gov.br", "senha": "122167", "nome": "Maria", "secretaria": "SEMEA-AGRO", "role": "user", "ativo": true },
+  { "email": "rafael.coene@treslagoas.ms.gov.br", "senha": "654801", "nome": "Rafael", "secretaria": "SEFIRC", "role": "user", "ativo": true },
+  { "email": "dgp.smas@treslagoas.ms.gov.br", "senha": "890384", "nome": "Mariana", "secretaria": "SMAS", "role": "user", "ativo": true }
 
 ]
