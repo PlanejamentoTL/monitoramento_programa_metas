@@ -32,6 +32,9 @@ export default function EditPPAModal({
   const camposObrigatorios = [
     campoStatusAtual(),
     { key: "meta-fisica-2026", label: "Meta Indicador 2026" },
+    { key: "meta-fisica-2027", label: "Meta Indicador 2027" },
+    { key: "meta-fisica-2028", label: "Meta Indicador 2028" },
+    { key: "meta-fisica-2029", label: "Meta Indicador 2029" },
     { key: `resultado-indicador-${PERIODO_ATUAL}`, label: `Resultado Indicador ${PERIODO_ATUAL}` },
   ];
 
@@ -260,7 +263,7 @@ export default function EditPPAModal({
            <div className="activity-data" style={{ alignContent:"center"}} >
 
             <div className="campo">
-            <label>Meta Indicador 2026:</label>
+            <label>Meta Indicador 2026*:</label>
             <br />
             <br />
             <input
@@ -273,40 +276,37 @@ export default function EditPPAModal({
 
 
             <div className="campo">
-                <label>Meta Indicador 2027:</label>
+                <label>Meta Indicador 2027*:</label>
                 <br />
                 <br />
                 <input
                     className="campo_input"
                     value={gv("meta-fisica-2027")}
                     onChange={(e) => handleChange("meta-fisica-2027", e.target.value)}
-                    readOnly
                 />
             </div>
 
         
 
             <div className="campo">
-            <label>Meta Indicador 2028:</label>
+            <label>Meta Indicador 2028*:</label>
             <br />
             <br />
             <input
               className="campo_input"
               value={gv("meta-fisica-2028")}
               onChange={(e) => handleChange("meta-fisica-2028", e.target.value)}
-              readOnly
               />
           </div>
 
             <div className="campo">
-                <label>Meta Indicador 2029:</label>
+                <label>Meta Indicador 2029*:</label>
                 <br />
                 <br />
                 <input
                     className="campo_input"
                     value={gv("meta-fisica-2029")}
                     onChange={(e) => handleChange("meta-fisica-2029", e.target.value)}
-                    readOnly
                    
                 />
             </div>
