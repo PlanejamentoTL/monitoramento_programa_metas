@@ -16,6 +16,14 @@ export const CORES_STATUS = {
 
 export const campoEtapa = (tipo, n) => `${tipo}-etapa${n}`;
 
+// Tipo da meta: em metas de "Continuidade" as etapas não se aplicam e
+// previsão/status de cada etapa são gravados como "-".
+export const CAMPO_TIPO_META = "investimento-continuidade";
+export const TIPOS_META = ["Investimento", "Continuidade"];
+export const TRACO = "-";
+export const ehContinuidade = (meta) =>
+  String(meta?.[CAMPO_TIPO_META] ?? "").trim().toLowerCase() === "continuidade";
+
 const pad = (n) => String(n).padStart(2, "0");
 
 function dataValida(dia, mes, ano) {

@@ -12,23 +12,9 @@ import {
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import "../estilos/PainelMetas.css";
 import { PERIODO_ATUAL } from "../config/periodoAtual";
+import { STATUS, SEM_STATUS, semestresDoPlano } from "../utils/estatisticasStatus";
 
 ChartJS.register(ArcElement, BarElement, CategoryScale, LinearScale, Tooltip, Legend, ChartDataLabels);
-
-const STATUS = ["Concluída", "Em Partes", "Planejada", "Não Contemplada"];
-const SEM_STATUS = "Sem status";
-
-// Semestres disponíveis no plano (campos "status-AAAA-S"), em ordem e até o período atual
-function semestresDoPlano(rows) {
-  const set = new Set();
-  rows.forEach((r) =>
-    Object.keys(r).forEach((k) => {
-      const m = k.match(/^status-(\d{4}-[12])$/);
-      if (m) set.add(m[1]);
-    })
-  );
-  return [...set].sort().filter((p) => p <= PERIODO_ATUAL);
-}
 
 export default function PainelMetas({ rows = [] }) {
   // Contagem por status

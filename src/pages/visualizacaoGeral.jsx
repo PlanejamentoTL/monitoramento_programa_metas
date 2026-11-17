@@ -41,6 +41,21 @@ const navigate = useNavigate();
 
 const { rows, setRows } = useDadosMetas(plano, secretariaFiltro);
 
+  const [emitindo, setEmitindo] = useState(false);
+  async function handleEmitirRelatorio() {
+    setEmitindo(true);
+    try {
+      // Carregado só quando necessário (docx-templates é uma biblioteca grande)
+      const { emitirRelatorio } = await import("../utils/relatorio");
+      await emitirRelatorio(rows, plano, secretariaFiltro);
+    } catch (e) {
+      console.error("Erro ao emitir relatório:", e);
+      alert("Não foi possível emitir o relatório: " + (e?.message || e));
+    } finally {
+      setEmitindo(false);
+    }
+  }
+
 useEffect(()=> {
 
   if(user?.secretaria === "SEGOV"){
@@ -365,6 +380,23 @@ async function onSave() {
       }}
     >
        Gerar Planilha
+    </button>
+
+    <button
+      onClick={handleEmitirRelatorio}
+      disabled={emitindo}
+      style={{
+        marginLeft: "10px",
+        padding: "8px 16px",
+        backgroundColor: emitindo ? "#7a9cc6" : "#0060a3",
+        color: "#fff",
+        border: "none",
+        borderRadius: "5px",
+        cursor: emitindo ? "wait" : "pointer",
+        fontWeight: "bold",
+      }}
+    >
+       {emitindo ? "Emitindo..." : "Emitir Relatório"}
     </button>
   </div>
 </div>
