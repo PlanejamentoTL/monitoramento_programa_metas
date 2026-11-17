@@ -207,6 +207,16 @@ Valores atuais de referência (leia sempre do documento, não fixe no código):
   Nas demais coleções eles só existem nas metas que já foram salvas com as
   etapas preenchidas.
 
+### Investimento / Continuidade
+
+`investimento-continuidade` (string, em **todas as coleções**): `"Investimento"`,
+`"Continuidade"` ou `""` (não informado). Compare sem diferenciar maiúsculas.
+
+- Em metas de **Continuidade** as etapas não se aplicam: `previsao-etapaN` e
+  `status-etapaN` são gravados como **`"-"`** (traço). A porcentagem fica `"0"`.
+- Na divulgação, trate `"-"` como "não se aplica": não tente converter em data
+  e não conte como status (cai em "Sem status" se for usado em contagens de etapas).
+
 ### Porcentagem de execução
 
 `porcentagem-execucao` (string, ex.: `"55"`, sem `%`) existe em

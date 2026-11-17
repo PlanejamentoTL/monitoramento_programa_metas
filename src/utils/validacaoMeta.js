@@ -1,5 +1,5 @@
 import { PERIODO_ATUAL } from "../config/periodoAtual";
-import { NUMEROS_ETAPAS, campoEtapa, previsaoParaISO } from "./etapas";
+import { NUMEROS_ETAPAS, campoEtapa, previsaoParaISO, ehContinuidade, CAMPO_TIPO_META } from "./etapas";
 
 // Status do semestre atual que exigem documento comprobatório
 export const STATUS_EXIGEM_DOCUMENTO = ["Concluída", "Não Contemplada"];
@@ -30,12 +30,18 @@ export function validarMeta(meta, { campos = [], etapas = true } = {}) {
   const faltando = campos.filter((c) => vazio(meta?.[c.key])).map((c) => c.label);
   const datasInvalidas = [];
 
-  if (etapas) {
+  // Investimento / Continuidade é obrigatório em todos os modais
+  if (vazio(meta?.[CAMPO_TIPO_META])) faltando.unshift("Investimento / Continuidade");
+
+  // Metas de continuidade não têm etapas (previsão/status gravados como "-")
+  if (etapas && !ehContinuidade(meta)) {
     NUMEROS_ETAPAS.forEach((n) => {
       const previsao = meta?.[campoEtapa("previsao", n)];
       const iso = previsaoParaISO(previsao);
+      // Etapa "Não Contemplada" não exige previsão (mas, se preenchida, precisa ser válida)
+      const exigePrevisao = meta?.[campoEtapa("status", n)] !== "Não Contemplada";
       if (iso === null) datasInvalidas.push(n);
-      else if (iso === "") faltando.push(`Etapa ${n}: Previsão`);
+      else if (iso === "" && exigePrevisao) faltando.push(`Etapa ${n}: Previsão`);
       if (vazio(meta?.[campoEtapa("status", n)])) faltando.push(`Etapa ${n}: Status`);
     });
   }

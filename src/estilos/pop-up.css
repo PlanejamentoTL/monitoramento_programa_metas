@@ -175,3 +175,9 @@
   border: none; border-radius: 7px;
   background: #007BFF; color: #fff; cursor: pointer;
 }
+
+/* Investimento / Continuidade */
+.etapas-tipo { max-width: 320px; display: flex; flex-direction: column; gap: 6px; }
+.etapas-tipo label { font-weight: bold; }
+.etapas-tipo .campo_input { padding-top: 0; padding-left: 6px; }
+.etapas-lista--inativa { opacity: 0.45; pointer-events: none; user-select: none; }
