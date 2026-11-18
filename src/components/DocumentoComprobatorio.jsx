@@ -81,7 +81,7 @@ export default function DocumentoComprobatorio({ meta = {}, onChangeField, uploa
 
       {alerta && (
         <small className="documento-aviso">
-          {MSG_DOCUMENTO} (obrigatório para o status "{status}").
+          {`${MSG_DOCUMENTO} (obrigatório para o status "${status}").`}
         </small>
       )}
 
