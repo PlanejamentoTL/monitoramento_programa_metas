@@ -139,6 +139,26 @@
   color: #6b6b6b;
   cursor: not-allowed;
 }
+.btn-excluir-documento {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 7px;
+  background: #dc3545;
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+}
+.btn-excluir-documento:hover:not(:disabled) { background: #b02a37; }
+.btn-excluir-documento:disabled {
+  background: #c9c9c9;
+  color: #6b6b6b;
+  cursor: not-allowed;
+}
 .documento-icone { font-size: 26px; display: inline-flex; }
 .documento-icone--ok { color: #2e9e44; }
 .documento-icone--alerta { color: #e08a00; }

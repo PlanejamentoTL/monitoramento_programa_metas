@@ -8,7 +8,7 @@ import { createReport } from "docx-templates/lib/browser.js";
 import { PERIODO_ATUAL } from "../config/periodoAtual";
 import { contarStatus } from "./estatisticasStatus";
 import { graficoRoscaPNG, graficoEvolucaoPNG, TAMANHO_CM } from "./graficosRelatorio";
-import { NUMEROS_ETAPAS, campoEtapa, previsaoParaBR } from "./etapas";
+import { NUMEROS_ETAPAS, campoEtapa, previsaoParaBR, calcularPorcentagemExecucao, formatarPeso } from "./etapas";
 
 export const NOMES_PLANOS = {
   "plano-governo": "Plano de Governo",
@@ -56,8 +56,14 @@ export function faseDaMeta(row) {
   return fase;
 }
 
+// Modelos disponíveis (gerados por scripts/preparar-modelo-relatorio.py)
+export const MODELOS_RELATORIO = [
+  { arquivo: "relatorio.docx", sufixo: "modelo1" },
+  { arquivo: "relatorio3.docx", sufixo: "modelo3" },
+];
+
 // Campos de cada meta usados dentro do loop {{FOR m IN metas}}
-function dadosDaMeta(row) {
+function dadosDaMeta(row, plano) {
   const d = {
     n: txt(row.numero),
     numero: txt(row.numero),
@@ -66,7 +72,14 @@ function dadosDaMeta(row) {
     detalhamento: txt(row.detalhamento),
     indicador: txt(row.indicador),
     "un-medida": txt(row["un-medida"]),
-    "porcentagem-execucao": txt(row["porcentagem-execucao"]),
+    // Sempre recalculada pelas etapas (o valor gravado pode estar desatualizado)
+    "porcentagem-execucao": formatarPeso(calcularPorcentagemExecucao(row)),
+    "status-atual": txt(row[`status-${PERIODO_ATUAL}`]),
+    "resultado-indicador-atual": txt(row[`resultado-indicador-${PERIODO_ATUAL}`]),
+    "periodo-atual": PERIODO_ATUAL,
+    plano: NOMES_PLANOS[plano] || plano,
+    "secretaria-responsavel":
+      NOMES_SECRETARIAS[row["secretaria-responsavel"]] || txt(row["secretaria-responsavel"]),
   };
 
   NUMEROS_ETAPAS.forEach((n) => {
@@ -129,7 +142,7 @@ function montarDados(rows, plano, secretaria) {
     "qtd-executada": String(fases[4]),
     "qtd-encerramento": String(fases[5]),
 
-    metas: [...rows].sort(ordenarPorNumero).map(dadosDaMeta),
+    metas: [...rows].sort(ordenarPorNumero).map((r) => dadosDaMeta(r, plano)),
   };
 }
 
@@ -172,25 +185,32 @@ function baixar(bytes, nome) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 
-export async function emitirRelatorio(rows, plano, secretaria) {
+// Gera um .docx para cada modelo em MODELOS_RELATORIO (os gráficos são desenhados uma vez só)
+export async function emitirRelatorio(rows, plano, secretaria, modelos = MODELOS_RELATORIO) {
   if (!rows?.length) {
     alert("Não há metas para o plano e a secretaria selecionados.");
     return;
   }
 
-  const resp = await fetch(`${import.meta.env.BASE_URL}modelos/relatorio.docx`);
-  if (!resp.ok) throw new Error(`Modelo do relatório não encontrado (HTTP ${resp.status}).`);
-  const template = new Uint8Array(await resp.arrayBuffer());
-
-  const report = await createReport({
-    template,
-    data: montarDados(rows, plano, secretaria),
-    cmdDelimiter: ["{{", "}}"],
-    runJs,
-    processLineBreaks: true,
-    fixSmartQuotes: true,
-  });
-
+  const data = montarDados(rows, plano, secretaria);
   const hoje = new Date().toISOString().slice(0, 10);
-  baixar(report, `relatorio-${plano}-${secretaria}-${hoje}.docx`);
+
+  for (const modelo of modelos) {
+    const resp = await fetch(`${import.meta.env.BASE_URL}modelos/${modelo.arquivo}`);
+    if (!resp.ok) throw new Error(`Modelo "${modelo.arquivo}" não encontrado (HTTP ${resp.status}).`);
+    const template = new Uint8Array(await resp.arrayBuffer());
+
+    const report = await createReport({
+      template,
+      data,
+      cmdDelimiter: ["{{", "}}"],
+      runJs,
+      processLineBreaks: true,
+      fixSmartQuotes: true,
+    });
+
+    baixar(report, `relatorio-${plano}-${secretaria}-${hoje}-${modelo.sufixo}.docx`);
+    // Pequena pausa entre os downloads para o navegador não descartar o segundo
+    await new Promise((r) => setTimeout(r, 400));
+  }
 }
