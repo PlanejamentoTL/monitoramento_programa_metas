@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaCheckCircle, FaExclamationTriangle, FaEye } from "react-icons/fa";
+import { FaCheckCircle, FaExclamationTriangle, FaEye, FaTrashAlt } from "react-icons/fa";
 import { PERIODO_ATUAL } from "../config/periodoAtual";
 import { documentoObrigatorio, documentoPendente, MSG_DOCUMENTO } from "../utils/validacaoMeta";
 
@@ -9,6 +9,8 @@ import { documentoObrigatorio, documentoPendente, MSG_DOCUMENTO } from "../utils
 // "Não Contemplada" (documento obrigatório) e não há documento anexado.
 export default function DocumentoComprobatorio({ meta = {}, onChangeField, uploadParaDrive }) {
   const [enviando, setEnviando] = useState(false);
+  // Muda a key do input de arquivo para limpá-lo (permite reenviar o mesmo arquivo)
+  const [inputKey, setInputKey] = useState(0);
 
   const link = String(meta?.["documentos-comprobatorios"] ?? "").trim();
   const status = meta?.[`status-${PERIODO_ATUAL}`];
@@ -41,6 +43,15 @@ export default function DocumentoComprobatorio({ meta = {}, onChangeField, uploa
     }
   }
 
+  // Remove o vínculo do documento com a meta (gravado ao clicar em Salvar).
+  // O arquivo continua no Google Drive.
+  function handleExcluir() {
+    if (!link) return;
+    if (!window.confirm("Excluir o documento comprobatório anexado a esta meta?")) return;
+    onChangeField?.("documentos-comprobatorios", "");
+    setInputKey((k) => k + 1);
+  }
+
   return (
     <div className="campo">
       <label>
@@ -51,6 +62,7 @@ export default function DocumentoComprobatorio({ meta = {}, onChangeField, uploa
 
       <div className="documento-linha">
         <input
+          key={inputKey}
           id="campo_documento_comprobatorio2"
           className="campo_input"
           type="file"
@@ -67,6 +79,17 @@ export default function DocumentoComprobatorio({ meta = {}, onChangeField, uploa
           onClick={() => window.open(link, "_blank", "noopener,noreferrer")}
         >
           <FaEye /> Visualizar documentação anexada
+        </button>
+
+        <button
+          type="button"
+          className="btn-excluir-documento"
+          disabled={!link || enviando}
+          title={link ? "Excluir o documento anexado" : "Nenhum documento anexado"}
+          aria-label="Excluir o documento anexado"
+          onClick={handleExcluir}
+        >
+          <FaTrashAlt />
         </button>
 
         <span
