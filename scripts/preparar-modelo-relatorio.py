@@ -7,15 +7,42 @@ A partir do modelo original, gera uma cópia com:
   - os campos {{resultado-indicador-AAAA-S}} na tabela de resultados (que tinha valores fixos);
   - "Status Atual" e o resultado ao lado dele ligados ao período atual
     ({{status-atual}}, {{resultado-indicador-atual}}, {{periodo-atual}});
-  - {{porcentagem-execução}} normalizado para {{porcentagem-execucao}}.
+  - {{porcentagem-execução}} normalizado para {{porcentagem-execucao}};
+  - quebra de página antes de cada meta e remoção das linhas em branco que
+    sobravam antes/depois do loop (evita páginas em branco e imagens fixas na
+    página sobrepostas ao conteúdo da meta anterior);
+  - imagens giradas 90°/270° pelo Google Docs (quadro "deitado" + rotação +
+    recortes negativos) convertidas em quadro horizontal sem rotação, que o
+    Word exibe igual ao Google Docs;
+  - opcional --compactar N: remove N linhas em branco do bloco da meta, uma de
+    cada vez e sempre da maior sequência, para a meta caber em 1 página no Word;
+  - opcional --compactar-capa N: o mesmo na 1ª página (gráficos e tabelas).
+    O Google Docs usa linhas mais baixas que o Word; por isso modelos feitos
+    nele costumam precisar de alguns ajustes. Confira o resultado no Word.
 
 Uso (rode de novo sempre que editar o modelo original):
   python scripts/preparar-modelo-relatorio.py "public/modelos/modelo-relatorio(1).docx" public/modelos/relatorio.docx
   python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio3.docx public/modelos/relatorio3.docx
+  python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio4.docx public/modelos/relatorio4.docx --compactar 2
+  python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio5.docx public/modelos/relatorio5.docx --compactar 28 --compactar-capa 2
 """
 import re, sys, zipfile
 
-origem, destino = sys.argv[1], sys.argv[2]
+args = sys.argv[1:]
+
+
+def opcao(nome):
+    if nome not in args:
+        return 0
+    k = args.index(nome)
+    valor = int(args[k + 1])
+    del args[k:k + 2]
+    return valor
+
+
+compactar = opcao("--compactar")
+compactar_capa = opcao("--compactar-capa")
+origem, destino = args[0], args[1]
 zin = zipfile.ZipFile(origem)
 x = zin.read("word/document.xml").decode("utf-8")
 
@@ -50,9 +77,16 @@ def tem_conteudo(xml):
     return textos(xml).strip() != "" or "<w:drawing" in xml
 
 
-def paragrafo(texto):
-    return ('<w:p><w:pPr><w:rPr/></w:pPr><w:r><w:rPr><w:rtl w:val="0"/></w:rPr>'
-            f'<w:t xml:space="preserve">{texto}</w:t></w:r></w:p>')
+# Parágrafo de altura mínima (1 pt): usado nos comandos do loop e no fim do
+# documento, para não empurrar o conteúdo nem criar página em branco.
+PPR_MINIMO = ('<w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/>'
+              '<w:rPr><w:sz w:val="2"/><w:szCs w:val="2"/></w:rPr></w:pPr>')
+
+
+def paragrafo(texto=""):
+    corpo = (f'<w:r><w:rPr><w:sz w:val="2"/><w:szCs w:val="2"/></w:rPr>'
+             f'<w:t xml:space="preserve">{texto}</w:t></w:r>') if texto else ""
+    return f"<w:p>{PPR_MINIMO}{corpo}</w:p>"
 
 
 def tabela_com(xml, trecho):
@@ -96,6 +130,83 @@ if "Status Atual" in x:
 
 # 5) Nome de campo com acento
 x = x.replace("{{porcentagem-execução}}", "{{porcentagem-execucao}}")
+
+# 6) Paginação: cada meta começa numa página nova
+PARAGRAFO = r"<w:p[ >](?:(?!<w:p[ >]).)*?</w:p>"
+
+
+def sem_vazios(trecho, quantos=None, manter=0):
+    vazios = [p for p in re.findall(PARAGRAFO, trecho, re.S) if not tem_conteudo(p)]
+    alvo = vazios[:quantos] if quantos is not None else vazios[:max(len(vazios) - manter, 0)]
+    for p in alvo:
+        trecho = trecho.replace(p, "", 1)
+    return trecho
+
+
+def limpar_entre(a, b, **kw):
+    global x
+    x = x[:a] + sem_vazios(x[a:b], **kw) + x[b:]
+
+
+# 6a) Linhas em branco entre a tabela de fases e o loop (geravam uma página em branco)
+ini_loop = x.index("{{FOR m IN metas}}")
+_, _, fim_fases = next((t, s, e) for t, s, e in itens_do_corpo(x) if t == "tbl" and "Metas sem atividade" in textos(x[s:e]))
+limpar_entre(fim_fases, x.rfind("<w:p>", 0, ini_loop))
+
+# 6b) Quebra de página no primeiro parágrafo do bloco da meta
+p = x.index("<w:p", x.index("</w:p>", x.index("{{FOR m IN metas}}")))
+pp = x.index("<w:pPr>", p) + len("<w:pPr>")
+x = x[:pp] + "<w:pageBreakBefore/>" + x[pp:]
+
+# 6c) Linhas em branco depois do loop: troca todas por 1 parágrafo mínimo
+# (a tabela flutuante do fim da meta precisa de um parágrafo depois dela)
+fim_loop = x.index("</w:p>", x.index("{{END-FOR m}}")) + len("</w:p>")
+limpar_entre(fim_loop, x.index("<w:sectPr", fim_loop))
+x = x[:fim_loop] + paragrafo() + x[fim_loop:]
+
+# 6d) Opcional: remove n linhas em branco entre a e b, uma de cada vez, sempre
+# da maior sequência de linhas em branco naquele momento
+def compactar_trecho(inicio, fim, n):
+    global x
+    for _ in range(n):
+        a, b = x.index(inicio), x.index(fim)
+        seqs, atual = [], []
+        for t, s, e in itens_do_corpo(x):
+            if s < a or e > b:
+                continue
+            if t == "p" and not tem_conteudo(x[s:e]) and "{{" not in x[s:e]:
+                atual.append((s, e))
+            else:
+                seqs.append(atual)
+                atual = []
+        seqs.append(atual)
+        maior = max(seqs, key=len)
+        if not maior:
+            return
+        s, e = maior[0]
+        x = x[:s] + x[e:]
+
+
+compactar_trecho("{{FOR m IN metas}}", "{{END-FOR m}}", compactar)
+
+compactar_trecho("<w:body>", "{{qtd-sem-atividade}}", compactar_capa)
+
+# 7) Imagens giradas 90°/270° (Google Docs): o Word não aplica a rotação do mesmo
+# jeito e mostra a imagem em pé. Troca largura/altura, remove a rotação e os
+# recortes, deixando a imagem inteira no quadro já na orientação final.
+def endireitar(m):
+    d = m.group(0)
+    if not re.search(r'<a:xfrm rot="(5400000|16200000)"', d):
+        return d
+    cx, cy = re.search(r'<wp:extent cx="(\d+)" cy="(\d+)"', d).groups()
+    d = re.sub(r'<wp:extent cx="\d+" cy="\d+"', f'<wp:extent cx="{cy}" cy="{cx}"', d)
+    d = re.sub(r'<a:ext cx="\d+" cy="\d+"', f'<a:ext cx="{cy}" cy="{cx}"', d)
+    d = re.sub(r'<a:xfrm rot="\d+"', "<a:xfrm", d)
+    d = re.sub(r'<a:srcRect[^>]*/>', '<a:srcRect b="0" l="0" r="0" t="0"/>', d)
+    return d
+
+
+x = re.sub(r"<w:drawing>.*?</w:drawing>", endireitar, x, flags=re.S)
 
 zout = zipfile.ZipFile(destino, "w", zipfile.ZIP_DEFLATED)
 for item in zin.infolist():

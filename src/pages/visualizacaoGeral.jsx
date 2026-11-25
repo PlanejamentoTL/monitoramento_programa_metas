@@ -334,6 +334,7 @@ async function onSave() {
   <option value="plano-primeira-infancia">Plano Municipal da 1ª Infância</option>
   <option value="plano-tres-lagoas-sustentavel">Plano Três Lagoas Sustentável</option>
   <option value="plano-setorial">Plano Setorial - Assistência Social</option>
+  <option value="plano-setorial-smas-2026-2029">Plano Setorial SMAS - 2026-2029</option>
   <option value="base-teste">Teste</option>
     </select>
   </div>
@@ -494,6 +495,7 @@ async function onSave() {
   onChangeField={onChangeField}
   onSave={onSave}
   uploadParaDrive={uploadParaDrive}
+  plano={plano}
   
 />
 
