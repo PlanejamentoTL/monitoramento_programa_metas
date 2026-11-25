@@ -7,6 +7,13 @@ import EtapasMeta from "../components/EtapasMeta";
 import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
 import AvisoValidacao from "../components/AvisoValidacao";
 import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
+import { anosDoPlano, semestresDosAnos } from "../config/planos";
+
+const STATUS = ["Concluída", "Em Partes", "Planejada", "Não Contemplada"];
+
+// Divide uma lista em linhas de `n` itens (layout em grade do modal)
+const emLinhas = (lista, n) =>
+  Array.from({ length: Math.ceil(lista.length / n) }, (_, i) => lista.slice(i * n, i * n + n));
 
 
 
@@ -18,6 +25,7 @@ export default function EditPlanosGeraisModal({
   onChangeField,
   onSave,
    uploadParaDrive,
+  plano,
 }) {
 
   const [aviso, setAviso] = useState(null);
@@ -79,20 +87,18 @@ export default function EditPlanosGeraisModal({
     onChangeField?.(k, v);
   }
 
+  // Anos de vigência do plano (ex.: 2025-2028 ou 2026-2029) e seus semestres
+  const anos = anosDoPlano(plano);
+  const semestres = semestresDosAnos(anos);
+
   // Campos obrigatórios deste modal (além das etapas e do documento, quando exigido)
   const camposObrigatorios = [
     campoStatusAtual(),
     { key: "indicador", label: "Indicador" },
     { key: "un-medida", label: "Unidade de Medida" },
-    { key: "meta-indicador-2025", label: "Meta Indicador 2025" },
-    { key: "meta-indicador-2026", label: "Meta Indicador 2026" },
-    { key: "meta-indicador-2027", label: "Meta Indicador 2027" },
-    { key: "meta-indicador-2028", label: "Meta Indicador 2028" },
+    ...anos.map((a) => ({ key: `meta-indicador-${a}`, label: `Meta Indicador ${a}` })),
     { key: `resultado-indicador-${PERIODO_ATUAL}`, label: `Resultado Indicador ${PERIODO_ATUAL}` },
-    { key: "meta-financeira-2025", label: "Meta Financeira 2025" },
-    { key: "meta-financeira-2026", label: "Meta Financeira 2026" },
-    { key: "meta-financeira-2027", label: "Meta Financeira 2027" },
-    { key: "meta-financeira-2028", label: "Meta Financeira 2028" },
+    ...anos.map((a) => ({ key: `meta-financeira-${a}`, label: `Meta Financeira ${a}` })),
     { key: "plano-acao", label: "Plano de ação" },
   ];
 
@@ -207,400 +213,85 @@ export default function EditPlanosGeraisModal({
             <p>Adicione um documento comprobatório caso o status seja "Concluída" ou um documento de justificativa caso o status seja "Não Contemplada".</p>
           </div>
 
-
-          <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Status 2025-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2025-1")}
-              onChange={(e) => handleChange("status-2025-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Status 2025-2:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2025-2")}
-              onChange={(e) => handleChange("status-2025-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-            <div className="campo">
-            <label>Status 2026-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2026-1")}
-              onChange={(e) => handleChange("status-2026-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Status 2026-2*:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2026-2")}
-              onChange={(e) => handleChange("status-2026-2", e.target.value)}
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-        </div>
-
-          <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Status 2027-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2027-1")}
-              onChange={(e) => handleChange("status-2027-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Status 2027-2:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2027-2")}
-              onChange={(e) => handleChange("status-2027-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-            <div className="campo">
-            <label>Status 2028-1:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2028-1")}
-              onChange={(e) => handleChange("status-2028-1", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-          <div className="campo">
-            <label>Status 2028-2:</label>
-            <br />
-            <br />
-            <select
-              id="campo_status_meta2"
-              className="campo_input"
-              value={gv("status-2028-2")}
-              onChange={(e) => handleChange("status-2028-2", e.target.value)}
-              disabled
-            >
-              <option value="">Selecionar</option>
-              <option value="Concluída">Concluída</option>
-              <option value="Em Partes">Em Partes</option>
-              <option value="Planejada">Planejada</option>
-              <option value="Não Contemplada">Não Contemplada</option>
-            </select>
-          </div>
-
-
-        </div>
+          {emLinhas(semestres, 4).map((linha) => (
+            <div key={linha[0]} className="activity-data" style={{ alignContent: "center" }}>
+              {linha.map((s) => (
+                <div key={s} className="campo">
+                  <label>Status {s}{s === PERIODO_ATUAL ? "*" : ""}:</label>
+                  <br />
+                  <br />
+                  <select
+                    className="campo_input"
+                    value={gv(`status-${s}`)}
+                    onChange={(e) => handleChange(`status-${s}`, e.target.value)}
+                    disabled={s !== PERIODO_ATUAL}
+                  >
+                    <option value="">Selecionar</option>
+                    {STATUS.map((st) => (
+                      <option key={st} value={st}>{st}</option>
+                    ))}
+                  </select>
+                </div>
+              ))}
+            </div>
+          ))}
 
         <EtapasMeta meta={meta} onChangeField={handleChange} atualizarPorcentagem />
 
         <div className="destaque">
-                <h2>Meta do indicador</h2>
-           <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Meta Indicador 2025:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("meta-indicador-2025")}
-              onChange={(e) => handleChange("meta-indicador-2025", e.target.value)}
-              
-              />
+          <h2>Meta do indicador</h2>
+          <div className="activity-data" style={{ alignContent: "center" }}>
+            {anos.map((a) => (
+              <div key={a} className="campo">
+                <label>Meta Indicador {a}:</label>
+                <br />
+                <br />
+                <input
+                  className="campo_input"
+                  value={gv(`meta-indicador-${a}`)}
+                  onChange={(e) => handleChange(`meta-indicador-${a}`, e.target.value)}
+                />
+              </div>
+            ))}
           </div>
+        </div>
 
-
-            <div className="campo">
-                <label>Meta Indicador 2026:</label>
+        <h2>Resultado do indicador</h2>
+        {emLinhas(semestres, 4).map((linha) => (
+          <div key={linha[0]} className="activity-data" style={{ alignContent: "center" }}>
+            {linha.map((s) => (
+              <div key={s} className="campo">
+                <label>Resultado Indicador {s}{s === PERIODO_ATUAL ? "*" : ""}:</label>
                 <br />
                 <br />
                 <input
-                    className="campo_input"
-                    value={gv("meta-indicador-2026")}
-                    onChange={(e) => handleChange("meta-indicador-2026", e.target.value)}
-                    
+                  className="campo_input"
+                  value={gv(`resultado-indicador-${s}`)}
+                  onChange={(e) => handleChange(`resultado-indicador-${s}`, e.target.value)}
+                  readOnly={s !== PERIODO_ATUAL}
                 />
-            </div>
-
-        
-
-            <div className="campo">
-            <label>Meta Indicador 2027:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("meta-indicador-2027")}
-              onChange={(e) => handleChange("meta-indicador-2027", e.target.value)}
-            
-              />
+              </div>
+            ))}
           </div>
+        ))}
 
-            <div className="campo">
-                <label>Meta Indicador 2028:</label>
+        <div className="destaque">
+          <h2>Meta Financeira Anual</h2>
+          <div className="activity-data" style={{ alignContent: "center" }}>
+            {anos.map((a) => (
+              <div key={a} className="campo">
+                <label>Meta Financeira {a}:</label>
                 <br />
                 <br />
                 <input
-                    className="campo_input"
-                    value={gv("meta-indicador-2028")}
-                    onChange={(e) => handleChange("meta-indicador-2028", e.target.value)}
-                   
-                   
+                  className="campo_input"
+                  value={gv(`meta-financeira-${a}`)}
+                  onChange={(e) => handleChange(`meta-financeira-${a}`, e.target.value)}
                 />
-            </div>
-         </div>
-
-         </div>
-
-
-         <h2>Resultado do indicador</h2>
-           <div className="activity-data" style={{ alignContent:"center"}} >
-             
-            <div className="campo">
-            <label>Resultado Indicador 2025-1:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("resultado-indicador-2025-1")}
-              onChange={(e) => handleChange("resultado-indicador-2025-1", e.target.value)}
-              readOnly
-              
-              />
+              </div>
+            ))}
           </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2025-2:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2025-2")}
-                    onChange={(e) => handleChange("resultado-indicador-2025-2", e.target.value)}
-                    readOnly
-                   
-                />
-            </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2026-1:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2026-1")}
-                    onChange={(e) => handleChange("resultado-indicador-2026-1", e.target.value)}
-                    readOnly
-                    
-                />
-            </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2026-2*:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2026-2")}
-                    onChange={(e) => handleChange("resultado-indicador-2026-2", e.target.value)}
-                    
-                />
-            </div>
-         </div>
-
-           <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Resultado Indicador 2027-1:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("resultado-indicador-2027-1")}
-              onChange={(e) => handleChange("resultado-indicador-2027-1", e.target.value)}
-              readOnly
-             
-              />
-          </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2027-2:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2027-2")}
-                    onChange={(e) => handleChange("resultado-indicador-2027-2", e.target.value)}
-                    readOnly
-                   
-                    
-                />
-            </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2028-1:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2028-1")}
-                    onChange={(e) => handleChange("resultado-indicador-2028-1", e.target.value)}
-                    readOnly
-                    
-                   
-                />
-            </div>
-
-            <div className="campo">
-                <label>Resultado Indicador 2028-2:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("resultado-indicador-2028-2")}
-                    onChange={(e) => handleChange("resultado-indicador-2028-2", e.target.value)}
-                    readOnly
-                    
-                    
-                />
-            </div>
-         </div>
-
-
-          <div className="destaque">
-                <h2>Meta Financeira Anual</h2>
-           <div className="activity-data" style={{ alignContent:"center"}} >
-
-            <div className="campo">
-            <label>Meta Financeira 2025:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("meta-financeira-2025")}
-              onChange={(e) => handleChange("meta-financeira-2025", e.target.value)}
-              
-              />
-          </div>
-
-
-            <div className="campo">
-                <label>Meta Financeira 2026:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("meta-financeira-2026")}
-                    onChange={(e) => handleChange("meta-financeira-2026", e.target.value)}
-                    
-                />
-            </div>
-
-        
-
-            <div className="campo">
-            <label>Meta Financeira 2027:</label>
-            <br />
-            <br />
-            <input
-              className="campo_input"
-              value={gv("meta-financeira-2027")}
-              onChange={(e) => handleChange("meta-financeira-2027", e.target.value)}
-            
-              />
-          </div>
-
-            <div className="campo">
-                <label>Meta Financeira 2028:</label>
-                <br />
-                <br />
-                <input
-                    className="campo_input"
-                    value={gv("meta-financeira-2028")}
-                    onChange={(e) => handleChange("meta-financeira-2028", e.target.value)}
-                   
-                   
-                />
-            </div>
-         </div>
-
-         </div>
+        </div>
 
           
 

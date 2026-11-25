@@ -1,4 +1,4 @@
-// Emissão do relatório .docx a partir do modelo public/modelos/relatorio.docx
+// Emissão do relatório .docx a partir dos modelos em public/modelos (relatorio4.docx e relatorio5.docx)
 //
 // Campos do modelo: {{nome-do-campo}} (pode ter hífen, como no Firestore).
 //  - Fora do loop: dados gerais (nome-plano, qtd-concluidas, gráficos...)
@@ -18,6 +18,7 @@ export const NOMES_PLANOS = {
   "plano-primeira-infancia": "Plano Municipal da 1ª Infância",
   "plano-tres-lagoas-sustentavel": "Plano Três Lagoas Sustentável",
   "plano-setorial": "Plano Setorial - Assistência Social",
+  "plano-setorial-smas-2026-2029": "Plano Setorial SMAS - 2026-2029",
   "base-teste": "Teste",
 };
 
@@ -58,8 +59,8 @@ export function faseDaMeta(row) {
 
 // Modelos disponíveis (gerados por scripts/preparar-modelo-relatorio.py)
 export const MODELOS_RELATORIO = [
-  { arquivo: "relatorio.docx", sufixo: "modelo1" },
-  { arquivo: "relatorio3.docx", sufixo: "modelo3" },
+  { arquivo: "relatorio4.docx", sufixo: "modelo4" },
+  { arquivo: "relatorio5.docx", sufixo: "modelo5" },
 ];
 
 // Campos de cada meta usados dentro do loop {{FOR m IN metas}}
@@ -209,7 +210,7 @@ export async function emitirRelatorio(rows, plano, secretaria, modelos = MODELOS
       fixSmartQuotes: true,
     });
 
-    baixar(report, `relatorio-${plano}-${secretaria}-${hoje}-${modelo.sufixo}.docx`);
+    baixar(report, `relatorio-${plano}-${secretaria}-${hoje}${modelo.sufixo ? `-${modelo.sufixo}` : ""}.docx`);
     // Pequena pausa entre os downloads para o navegador não descartar o segundo
     await new Promise((r) => setTimeout(r, 400));
   }

@@ -37,10 +37,12 @@ const fundoBranco = {
   },
 };
 
-// Tamanho de desenho (px CSS). Proporção igual à da imagem no Word (17 x 11 cm).
+// Tamanho de desenho (px CSS). Proporção igual à da imagem no Word (14 x 9 cm).
+// 9 cm de altura cabe na linha dos gráficos do modelo; maior que isso empurra
+// as tabelas para a página seguinte e desalinha as imagens de fundo.
 const LARGURA = 850;
 const ALTURA = 550;
-export const TAMANHO_CM = { width: 17, height: 11 };
+export const TAMANHO_CM = { width: 14, height: 9 };
 
 const FONTE = { family: "Arial, Helvetica, sans-serif" };
 
