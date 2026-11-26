@@ -6,7 +6,7 @@ import { PERIODO_ATUAL } from "../config/periodoAtual";
 import EtapasMeta from "../components/EtapasMeta";
 import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
 import AvisoValidacao from "../components/AvisoValidacao";
-import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
+import { validarMeta, campoStatusAtual, aplicarNaoContemplada } from "../utils/validacaoMeta";
 import { anosDoPlano, semestresDosAnos } from "../config/planos";
 
 const STATUS = ["Concluída", "Em Partes", "Planejada", "Não Contemplada"];
@@ -85,6 +85,9 @@ export default function EditPlanosGeraisModal({
 
   function handleChange(k, v) {
     onChangeField?.(k, v);
+    // Status atual "Não Contemplada": replica nos demais semestres e preenche
+    // os obrigatórios vazios com "-"/"0" (o documento continua obrigatório)
+    aplicarNaoContemplada(k, v, meta, onChangeField, { campos: camposObrigatorios, semestres: semestres });
   }
 
   // Anos de vigência do plano (ex.: 2025-2028 ou 2026-2029) e seus semestres

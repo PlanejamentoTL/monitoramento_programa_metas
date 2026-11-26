@@ -1,4 +1,4 @@
-// Emissão do relatório .docx a partir dos modelos em public/modelos (relatorio4.docx e relatorio5.docx)
+// Emissão do relatório .docx a partir dos modelos em public/modelos (relatorio4.docx e relatorio6.docx)
 //
 // Campos do modelo: {{nome-do-campo}} (pode ter hífen, como no Firestore).
 //  - Fora do loop: dados gerais (nome-plano, qtd-concluidas, gráficos...)
@@ -60,7 +60,7 @@ export function faseDaMeta(row) {
 // Modelos disponíveis (gerados por scripts/preparar-modelo-relatorio.py)
 export const MODELOS_RELATORIO = [
   { arquivo: "relatorio4.docx", sufixo: "modelo4" },
-  { arquivo: "relatorio5.docx", sufixo: "modelo5" },
+  { arquivo: "relatorio6.docx", sufixo: "modelo6" },
 ];
 
 // Campos de cada meta usados dentro do loop {{FOR m IN metas}}
@@ -75,6 +75,7 @@ function dadosDaMeta(row, plano) {
     "un-medida": txt(row["un-medida"]),
     // Sempre recalculada pelas etapas (o valor gravado pode estar desatualizado)
     "porcentagem-execucao": formatarPeso(calcularPorcentagemExecucao(row)),
+    // Valores do semestre vigente (PERIODO_ATUAL, em src/config/periodoAtual.js)
     "status-atual": txt(row[`status-${PERIODO_ATUAL}`]),
     "resultado-indicador-atual": txt(row[`resultado-indicador-${PERIODO_ATUAL}`]),
     "periodo-atual": PERIODO_ATUAL,

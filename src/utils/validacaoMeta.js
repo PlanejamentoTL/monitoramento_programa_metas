@@ -54,3 +54,52 @@ export function validarMeta(meta, { campos = [], etapas = true } = {}) {
     datasInvalidas,
   };
 }
+
+// ---------------------------------------------------------------------------
+// Meta "Não Contemplada" no semestre atual
+//
+// Ao marcar o status do semestre atual como "Não Contemplada":
+//   - os semestres SEGUINTES ao atual passam a "Não Contemplada"
+//     (semestres anteriores são mantidos, para preservar o histórico);
+//   - os campos obrigatórios vazios recebem "0" (campos numéricos) ou "-";
+//   - Investimento / Continuidade vazio recebe "-";
+//   - etapas sem status recebem "Não Contemplada" (dispensa a previsão).
+// Campos já preenchidos (exceto os status dos semestres) não são alterados.
+// O documento comprobatório continua obrigatório (documentoObrigatorio).
+export const NAO_CONTEMPLADA = "Não Contemplada";
+
+const CAMPO_NUMERICO = /^(meta-indicador|meta-fisica|meta-financeira|resultado-indicador|porcentagem-execucao)/;
+
+export function preenchimentoNaoContemplada(meta, { campos = [], semestres = [], etapas = true } = {}) {
+  const mudancas = {};
+
+  // "AAAA-S" em ordem alfabética = ordem cronológica
+  semestres.filter((s) => s > PERIODO_ATUAL).forEach((s) => {
+    const k = `status-${s}`;
+    if (meta?.[k] !== NAO_CONTEMPLADA) mudancas[k] = NAO_CONTEMPLADA;
+  });
+
+  campos.forEach(({ key }) => {
+    if (key in mudancas || !vazio(meta?.[key])) return;
+    mudancas[key] = CAMPO_NUMERICO.test(key) ? "0" : "-";
+  });
+
+  if (vazio(meta?.[CAMPO_TIPO_META])) mudancas[CAMPO_TIPO_META] = "-";
+
+  if (etapas && !ehContinuidade(meta)) {
+    NUMEROS_ETAPAS.forEach((n) => {
+      const k = campoEtapa("status", n);
+      if (vazio(meta?.[k])) mudancas[k] = NAO_CONTEMPLADA;
+    });
+  }
+
+  return mudancas;
+}
+
+// Envia as alterações acima pelo onChangeField quando o campo alterado é o
+// status do semestre atual e o novo valor é "Não Contemplada".
+export function aplicarNaoContemplada(k, v, meta, onChangeField, opcoes) {
+  if (k !== `status-${PERIODO_ATUAL}` || v !== NAO_CONTEMPLADA) return;
+  const mudancas = preenchimentoNaoContemplada({ ...meta, [k]: v }, opcoes);
+  Object.entries(mudancas).forEach(([campo, valor]) => onChangeField?.(campo, valor));
+}

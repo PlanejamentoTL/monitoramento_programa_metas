@@ -25,6 +25,7 @@ Uso (rode de novo sempre que editar o modelo original):
   python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio3.docx public/modelos/relatorio3.docx
   python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio4.docx public/modelos/relatorio4.docx --compactar 2
   python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio5.docx public/modelos/relatorio5.docx --compactar 28 --compactar-capa 2
+  python scripts/preparar-modelo-relatorio.py public/modelos/modelo-relatorio6.docx public/modelos/relatorio6.docx --compactar 32 --compactar-capa 2
 """
 import re, sys, zipfile
 

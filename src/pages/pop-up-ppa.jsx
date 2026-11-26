@@ -5,7 +5,7 @@ import { PERIODO_ATUAL } from "../config/periodoAtual";
 import EtapasMeta from "../components/EtapasMeta";
 import DocumentoComprobatorio from "../components/DocumentoComprobatorio";
 import AvisoValidacao from "../components/AvisoValidacao";
-import { validarMeta, campoStatusAtual } from "../utils/validacaoMeta";
+import { validarMeta, campoStatusAtual, aplicarNaoContemplada } from "../utils/validacaoMeta";
 
 export default function EditPPAModal({
   isOpen,
@@ -26,6 +26,9 @@ export default function EditPPAModal({
 
   function handleChange(k, v) {
     onChangeField?.(k, v);
+    // Status atual "Não Contemplada": replica nos demais semestres e preenche
+    // os obrigatórios vazios com "-"/"0" (o documento continua obrigatório)
+    aplicarNaoContemplada(k, v, meta, onChangeField, { campos: camposObrigatorios, semestres: ["2026-1", "2026-2", "2027-1", "2027-2", "2028-1", "2028-2", "2029-1", "2029-2"] });
   }
 
   // Campos obrigatórios deste modal (além das etapas e do documento, quando exigido)
